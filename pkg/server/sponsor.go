@@ -6,12 +6,18 @@ import (
 	"net"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/utils"
 	api "github.com/auburnhacks/sponsor/proto"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"google.golang.org/grpc"
+)
+
+var (
+	signingKey = []byte("supersecret")
 )
 
 func ListenAndServe(srv *SponsorServer, l net.Listener, listenAddr, serviceEndpoint *string) {
@@ -44,7 +50,20 @@ func (s *SponsorServer) DeleteAdmin(ctx context.Context, req *api.DeleteAdminReq
 }
 
 func (s *SponsorServer) LoginAdmin(ctx context.Context, req *api.LoginAdminRequest) (*api.LoginAdminResponse, error) {
-	return &api.LoginAdminResponse{}, nil
+	// TODO: look up database for the user
+	claims := &jwt.StandardClaims{
+		ExpiresAt: time.Date(2019, 9, 30, 0, 0, 0, 0, time.UTC).Unix(),
+		Issuer:    "auburnhacks",
+		Id:        "useridhere",
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenStr, err := token.SignedString(signingKey)
+	if err != nil {
+		return nil, err
+	}
+	return &api.LoginAdminResponse{
+		Token: tokenStr,
+	}, nil
 }
 
 func (s *SponsorServer) serveGRPC(l net.Listener) {

@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/api/annotations.proto";
+
+service SponsorService {
+    rpc CreateAdmin(CreateAdminRequest) returns(CreateAdminResponse) {
+        option (google.api.http) = {
+            post: "/v1/sponsor/admin"
+            body: "*"
+        };
+    }
+    rpc GetAdmin(GetAdminRequest) returns(GetAdminResponse) {
+        option (google.api.http) = {
+            get: "/v1/sponsor/admin/{adminID}"
+        };
+    }
+    rpc DeleteAdmin(DeleteAdminRequest) returns(DeleteAdminResponse) {
+        option (google.api.http) = {
+            delete: "/v1/sponsor/admin/{adminID}"
+        };     
+    }
+    rpc LoginAdmin(LoginAdminRequest) returns(LoginAdminResponse) {
+        option (google.api.http) = {
+            post: "/v1/sponsor/admin/login"
+            body: "*"
+        };
+    }
+}
+
+message LoginAdminRequest {
+    string username = 1;
+    string password = 2;
+}
+message LoginAdminResponse {
+    string token = 1;
+}
+
+message DeleteAdminRequest {
+    string adminID = 1;
+}
+
+message DeleteAdminResponse {
+    bool ok = 1;
+}
+
+message CreateAdminRequest {
+    string name = 1;
+    string email = 2;
+    string passwordPlainText = 3;
+}
+message CreateAdminResponse {
+    Admin admin = 1;
+}
+
+message GetAdminRequest {
+    string adminID = 1;
+}
+message GetAdminResponse {
+    Admin admin = 1;
+}
+
+message Admin {
+    string adminID = 1;
+    string name = 2;
+    string email = 3;
+    string password = 4;
+    repeated string ACL = 5;
+}

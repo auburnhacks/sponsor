@@ -2,10 +2,10 @@ package server
 
 import (
 	"context"
-	"log"
 	"net"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/admin"
 	"github.com/auburnhacks/sponsor/pkg/utils"
@@ -13,6 +13,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/mongodb/mongo-go-driver/mongo"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
 
@@ -38,12 +39,17 @@ type SponsorServer struct {
 }
 
 func (s *SponsorServer) CreateAdmin(ctx context.Context, req *api.CreateAdminRequest) (*api.CreateAdminResponse, error) {
-	// adminCollection := s.DB.Database("sponsor").Collection("admin")
-	log.Printf("%v\n", req.PasswordPlainText)
-	admin := admin.NewAdmin(req.Email, req.PasswordPlainText, false)
+	admin := admin.New(req.Name, req.Email, req.PasswordPlainText)
+	if err := admin.Register(); err != nil {
+		log.Errorf("error while registering admin: %v", err)
+		return nil, err
+	}
+	log.Debugf("%+v", admin)
 	return &api.CreateAdminResponse{
 		Admin: &api.Admin{
-			Email: admin.Email(),
+			Email:   admin.Email,
+			AdminID: int64(admin.ID),
+			ACL:     admin.ACL,
 		},
 	}, nil
 }
@@ -58,10 +64,14 @@ func (s *SponsorServer) DeleteAdmin(ctx context.Context, req *api.DeleteAdminReq
 
 func (s *SponsorServer) LoginAdmin(ctx context.Context, req *api.LoginAdminRequest) (*api.LoginAdminResponse, error) {
 	// TODO: look up database for the user
+	admin, err := admin.Login(req.Email, req.Password)
+	if err != nil {
+		return nil, err
+	}
+	log.Debugf("%+v", admin)
 	claims := &jwt.StandardClaims{
-		// ExpiresAt: time.Date(2019, 9, 30, 0, 0, 0, 0, time.UTC).Unix(),
-		Issuer: "sponsor_auburnhacks",
-		Id:     "useridhere",
+		ExpiresAt: time.Date(2019, 9, 30, 0, 0, 0, 0, time.UTC).Unix(),
+		Issuer:    "sponsor_auburnhacks",
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenStr, err := token.SignedString(signingKey)
@@ -70,6 +80,12 @@ func (s *SponsorServer) LoginAdmin(ctx context.Context, req *api.LoginAdminReque
 	}
 	return &api.LoginAdminResponse{
 		Token: tokenStr,
+		Admin: &api.Admin{
+			AdminID: int64(admin.ID),
+			Name:    admin.Name,
+			Email:   admin.Email,
+			ACL:     admin.ACL,
+		},
 	}, nil
 }
 
@@ -84,7 +100,7 @@ func (s *SponsorServer) serveGRPC(l net.Listener) {
 		}
 	}()
 	<-s.quit
-	log.Println("terminating rpc server")
+	log.Infof("terminating rpc server")
 	s.tWg.Add(1)
 	srv.GracefulStop()
 	s.tWg.Done()
@@ -105,7 +121,7 @@ func (s *SponsorServer) serveGateway(listenAddr, serviceEndpoint *string) {
 		Handler: mux,
 	}
 	go func() {
-		log.Println("serving gateway")
+		log.Info("serving gateway")
 		log.Fatal(srv.ListenAndServe())
 	}()
 	<-s.quit

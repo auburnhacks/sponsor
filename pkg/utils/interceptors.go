@@ -3,10 +3,10 @@ package utils
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
 
@@ -33,12 +33,12 @@ func UnaryAuthInterceptor(ctx context.Context,
 
 	h, err := handler(ctx, req)
 	if err != nil {
-		log.Printf("request - Method:%s\tDuration:%s\tError:%v\n",
+		log.Infof("request - Method:%s\tDuration:%s\tError:%v",
 			info.FullMethod,
 			time.Since(start),
 			err)
 	} else {
-		log.Printf("request - Method:%s\tDuration:%s\n",
+		log.Infof("request - Method:%s\tDuration:%s",
 			info.FullMethod,
 			time.Since(start))
 	}

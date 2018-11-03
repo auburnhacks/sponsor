@@ -1,88 +1,89 @@
 package admin
 
-// SuperUser is an interface that has to be satisfied by other types
-type Admin interface {
-	Email() string
-	Password() string
-	// Save is a function that should save the details of a admin to the database
-	Save() bool
-	//CanAddAdmins is a function that can be used to check if a certain admin can
-	// add other admins to the system
-	CanAddAdmins() bool
-	// CanAddSponsors is method that can be used to specify if an admin can add
-	// sponsors to the system
-	CanAddSponsors() bool
+import (
+	"database/sql"
+	"time"
+
+	"github.com/auburnhacks/sponsor/pkg/db"
+	"github.com/lib/pq"
+	"github.com/pkg/errors"
+)
+
+// DefaultACL is a variables that is used for all admins if no ACL list is
+// provided during signup
+var DefaultACL []string = []string{"read", "update"}
+
+type Admin struct {
+	ID        int      `db:"id,omitempty"`
+	Name      string   `db:"name,omitempty"`
+	Email     string   `db:"email,omitempty"`
+	Password  string   `db:"password,omitempty"`
+	ACL       []string `db:"acl,omitempty"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
-func NewAdmin(email, password string, isSuperAdmin bool) Admin {
-	if isSuperAdmin {
-		return &SuperAdmin{
-			email:    email,
-			password: password,
+func New(name, email, password string) *Admin {
+	a := &Admin{
+		Name:     name,
+		Email:    email,
+		Password: password,
+		ACL:      DefaultACL,
+	}
+	return a
+}
+
+func NewWithACL(name, email, password string, acl []string) *Admin {
+	a := &Admin{
+		Name:     name,
+		Email:    email,
+		Password: password,
+		ACL:      acl,
+	}
+	return a
+}
+
+// Save saves the instance of an admin to the database
+func (a *Admin) Save() error {
+	query := `INSERT INTO admins(name, email, password, acl) VALUES($1, $2, $3, $4)`
+	_, err := db.Conn.Exec(query, a.Name, a.Email, a.Password, a.ACL)
+	if err != nil {
+		return errors.Wrap(err, "cloud not save user to the database")
+	}
+	return nil
+}
+
+// Register is only called once when the admin first signs up
+func (a *Admin) Register() error {
+	query := `INSERT INTO admins(name, email, password, acl) VALUES($1, $2, $3, $4) RETURNING id`
+	stmt, err := db.Conn.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	var adminId int
+	err = stmt.QueryRow(a.Name, a.Email, a.Password, pq.Array(a.ACL)).Scan(&adminId)
+	if err != nil {
+		return err
+	}
+	// set the adminId to the instance
+	a.ID = adminId
+	return nil
+}
+
+func Login(email, password string) (*Admin, error) {
+	query := `SELECT * FROM admins WHERE email=$1`
+	stmt, err := db.Conn.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	var a Admin
+	err = stmt.QueryRow(email).Scan(&a.ID, &a.Name, &a.Email, &a.Password, pq.Array(&a.ACL), &a.CreatedAt, &a.UpdatedAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errors.Wrapf(err, "user with email %s not found", email)
 		}
+		return nil, err
 	}
-	return &RegularAdmin{
-		email:    email,
-		password: password,
-	}
-}
-
-// Admin is a type that is a SuperUser and can edit crucial
-// elements in the system
-type SuperAdmin struct {
-	email    string
-	password string
-}
-
-func (sa *SuperAdmin) Email() string {
-	return sa.email
-}
-
-func (sa *SuperAdmin) Password() string {
-	return sa.password
-}
-
-func (sa *SuperAdmin) CanAddAdmins() bool {
-	return true
-}
-func (sa *SuperAdmin) CanAddSponsors() bool {
-	return true
-}
-
-func (sa *SuperAdmin) Save() bool {
-	return true
-}
-
-type RegularAdmin struct {
-	email    string
-	password string
-}
-
-func (ra *RegularAdmin) Email() string {
-	return ra.email
-}
-
-func (ra *RegularAdmin) Password() string {
-	return ra.password
-}
-
-func (ra *RegularAdmin) CanAddAdmins() bool {
-	return false
-}
-func (ra *RegularAdmin) CanAddSponsors() bool {
-	return true
-}
-
-func (sa *RegularAdmin) Save() bool {
-	return true
-}
-
-type Sponsor struct {
-	Name        string   `json:"name,omitempty"`
-	Company     string   `json:"company,omitempty"`
-	Email       string   `json:"email,omitempty"`
-	Username    string   `json:"username,omitempty"`
-	ACL         []string `json:"acl,omitempty"`
-	Password    string   `json:"password,omitempty"`
-	CanAddUsers string   `json:"can_add_users,omitempty"`
+	return &a, nil
 }

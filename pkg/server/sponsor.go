@@ -6,8 +6,8 @@ import (
 	"net"
 	"net/http"
 	"sync"
-	"time"
 
+	"github.com/auburnhacks/sponsor/pkg/admin"
 	"github.com/auburnhacks/sponsor/pkg/utils"
 	api "github.com/auburnhacks/sponsor/proto"
 	"github.com/dgrijalva/jwt-go"
@@ -38,7 +38,14 @@ type SponsorServer struct {
 }
 
 func (s *SponsorServer) CreateAdmin(ctx context.Context, req *api.CreateAdminRequest) (*api.CreateAdminResponse, error) {
-	return &api.CreateAdminResponse{}, nil
+	// adminCollection := s.DB.Database("sponsor").Collection("admin")
+	log.Printf("%v\n", req.PasswordPlainText)
+	admin := admin.NewAdmin(req.Email, req.PasswordPlainText, false)
+	return &api.CreateAdminResponse{
+		Admin: &api.Admin{
+			Email: admin.Email(),
+		},
+	}, nil
 }
 
 func (s *SponsorServer) GetAdmin(ctx context.Context, req *api.GetAdminRequest) (*api.GetAdminResponse, error) {
@@ -52,9 +59,9 @@ func (s *SponsorServer) DeleteAdmin(ctx context.Context, req *api.DeleteAdminReq
 func (s *SponsorServer) LoginAdmin(ctx context.Context, req *api.LoginAdminRequest) (*api.LoginAdminResponse, error) {
 	// TODO: look up database for the user
 	claims := &jwt.StandardClaims{
-		ExpiresAt: time.Date(2019, 9, 30, 0, 0, 0, 0, time.UTC).Unix(),
-		Issuer:    "auburnhacks",
-		Id:        "useridhere",
+		// ExpiresAt: time.Date(2019, 9, 30, 0, 0, 0, 0, time.UTC).Unix(),
+		Issuer: "sponsor_auburnhacks",
+		Id:     "useridhere",
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenStr, err := token.SignedString(signingKey)
@@ -88,7 +95,7 @@ func (s *SponsorServer) serveGateway(listenAddr, serviceEndpoint *string) {
 	defer cancel()
 
 	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard,
-		&runtime.JSONPb{OrigName: true}))
+		&runtime.JSONPb{OrigName: false}))
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	if err := api.RegisterSponsorServiceHandlerFromEndpoint(ctx, mux, *serviceEndpoint, opts); err != nil {
 		log.Fatal(err)

@@ -82,7 +82,7 @@ message CreateAdminResponse {
 }
 
 message GetAdminRequest {
-    string adminID = 1;
+    int64 adminID = 1;
 }
 message GetAdminResponse {
     Admin admin = 1;

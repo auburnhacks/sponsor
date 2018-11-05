@@ -29,7 +29,14 @@ func (s *SponsorServer) CreateAdmin(ctx context.Context, req *api.CreateAdminReq
 
 // GetAdmin is a method on the SponsorServer that is used to get information of an admin
 func (s *SponsorServer) GetAdmin(ctx context.Context, req *api.GetAdminRequest) (*api.GetAdminResponse, error) {
-	return &api.GetAdminResponse{}, nil
+	admin, err := admin.GetAdminByID(int(req.AdminID))
+	if err != nil {
+		return nil, err
+	}
+	admin.Password = ""
+	return &api.GetAdminResponse{
+		Admin: &api.Admin{},
+	}, nil
 }
 
 // DeleteAdmin is a method on the SponsorServer that is used to delete an admin from the database
@@ -41,7 +48,6 @@ func (s *SponsorServer) DeleteAdmin(ctx context.Context, req *api.DeleteAdminReq
 // this method also deals with allocating a signed JWT token to the client for
 // making authenticated requests
 func (s *SponsorServer) LoginAdmin(ctx context.Context, req *api.LoginAdminRequest) (*api.LoginAdminResponse, error) {
-	// TODO: look up database for the user
 	admin, err := admin.Login(req.Email, req.Password)
 	if err != nil {
 		return nil, err

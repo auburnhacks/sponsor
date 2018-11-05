@@ -100,3 +100,21 @@ func Login(email, password string) (*Admin, error) {
 	}
 	return &a, nil
 }
+
+// GetAdminByID is a function that gets an admin from the given ID
+func GetAdminByID(adminID int) (*Admin, error) {
+	query := `SELECT * FROM admins WHERE id=$1`
+	stmt, err := db.Conn.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	var a Admin
+	err = stmt.QueryRow(adminID).Scan(&a.ID, &a.Name, &a.Email, &a.Password, pq.Array(&a.ACL), &a.CreatedAt, &a.UpdatedAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errors.Wrapf(err, "admin: error getting admin with id %d", adminID)
+		}
+		return nil, err
+	}
+	return &a, nil
+}

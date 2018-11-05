@@ -57,7 +57,7 @@ func request_SponsorService_GetAdmin_0(ctx context.Context, marshaler runtime.Ma
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "adminID")
 	}
 
-	protoReq.AdminID, err = runtime.String(val)
+	protoReq.AdminID, err = runtime.Int64(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "adminID", err)

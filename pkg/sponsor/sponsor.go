@@ -19,7 +19,7 @@ type Sponsor struct {
 	Name      string
 	Email     string
 	Password  string
-	Company   string
+	Company   *Company
 	ACL       []string
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -28,7 +28,7 @@ type Sponsor struct {
 // New returns a instance of a Sponsor it uses the input parameters but
 // if no ACL list is provided then it defaults to the DefaultACL list in the
 // package definition
-func New(name, email, password, company string, acl []string) *Sponsor {
+func New(name, email, password string, company *Company, acl []string) *Sponsor {
 	s := &Sponsor{
 		Name:     name,
 		Password: password,
@@ -60,4 +60,19 @@ func (s *Sponsor) Register() error {
 	}
 	s.ID = sponsorID
 	return nil
+}
+
+// Company is a struct that represents all the parameters required by a company
+type Company struct {
+	ID   int
+	Name string
+	Logo string
+}
+
+// NewCompany is a constructor that returns an instance of a Company
+func NewCompany(name, logo string) *Company {
+	return &Company{
+		Name: name,
+		Logo: logo,
+	}
 }

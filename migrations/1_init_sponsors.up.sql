@@ -23,8 +23,16 @@ CREATE TABLE IF NOT EXISTS sponsors (
     name text NOT NULL,
     email text NOT NULL,
     password text NOT NULL,
-    company text NOT NULL,
+    company int NOT NULL,
     acl text ARRAY,
+    created_at timestamp DEFAULT NOW() NOT NULL,
+    updated_at timestamp DEFAULT NOW() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS company (
+    id serial PRIMARY KEY,
+    name text NOT NULL,
+    logo text NOT NULL,
     created_at timestamp DEFAULT NOW() NOT NULL,
     updated_at timestamp DEFAULT NOW() NOT NULL
 );

@@ -2,9 +2,7 @@
 // to all packages
 package db
 
-import (
-	"database/sql"
-)
+import "github.com/jmoiron/sqlx"
 
 // Conn is a global variables that is used by all package to access a SQL database
-var Conn *sql.DB
+var Conn *sqlx.DB

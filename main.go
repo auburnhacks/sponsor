@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"net"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/auburnhacks/sponsor/pkg/db"
 	"github.com/auburnhacks/sponsor/pkg/server"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 )
@@ -74,9 +74,9 @@ func main() {
 
 	log.Debugf("connecting to database with info: %s", psqlInfo)
 
-	dbConn, err := sql.Open("postgres", psqlInfo)
+	dbConn, err := sqlx.Open("postgres", psqlInfo)
 	if err != nil {
-		log.Fatalf("error opening database connection: %v", err)
+		log.Fatalf("error connecting to database: %v", err)
 	}
 
 	// Initialize the global database connection with the opened connection

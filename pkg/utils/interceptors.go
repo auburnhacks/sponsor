@@ -16,6 +16,7 @@ var unauthenticatedRPC = map[string][]string{
 	"proto.SponsorService": []string{
 		"LoginAdmin",
 		"CreateAdmin",
+		"CreateSponsor",
 	},
 }
 

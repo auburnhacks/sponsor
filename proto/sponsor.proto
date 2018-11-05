@@ -5,6 +5,11 @@ package proto;
 import "google/api/annotations.proto";
 
 service SponsorService {
+    /*
+        ================================================================
+                        ADMIN RPC CALLS
+        ================================================================
+    */
     rpc CreateAdmin(CreateAdminRequest) returns(CreateAdminResponse) {
         option (google.api.http) = {
             post: "/v1/sponsor/admin"
@@ -27,6 +32,27 @@ service SponsorService {
             body: "*"
         };
     }
+
+
+    /*
+        ================================================================
+                        SPONSOR RPC CALLS
+        ================================================================
+    */
+    rpc CreateSponsor(CreateSponsorRequest) returns(CreateSponsorResponse) {
+        option (google.api.http) = {
+            post: "/v1/sponsor"
+            body: "*"
+        };
+    }
+}
+
+message CreateSponsorRequest {
+    Sponsor sponsor = 1;
+}
+
+message CreateSponsorResponse {
+    Sponsor sponsor = 1;
 }
 
 message LoginAdminRequest {
@@ -68,4 +94,13 @@ message Admin {
     string email = 3;
     string password = 4;
     repeated string ACL = 5;
+}
+
+message Sponsor {
+    int64 id = 1;
+    string name = 2;
+    string email = 3;
+    string password = 4;
+    string company = 5;
+    repeated string ACL = 6;
 }

@@ -1,3 +1,5 @@
+// Package admin deals with all the functionality needed by an admin to modify
+// state in the application
 package admin
 
 import (
@@ -11,18 +13,25 @@ import (
 
 // DefaultACL is a variables that is used for all admins if no ACL list is
 // provided during signup
-var DefaultACL []string = []string{"read", "update"}
+var DefaultACL = []string{"read", "update"}
 
+// Admin is a struct that is the highest entity in the system
+// It has write and read access to any thing in the database.
+// More fine grained controlled can be given based on the ACL
+// property
 type Admin struct {
-	ID        int      `db:"id,omitempty"`
-	Name      string   `db:"name,omitempty"`
-	Email     string   `db:"email,omitempty"`
-	Password  string   `db:"password,omitempty"`
-	ACL       []string `db:"acl,omitempty"`
+	ID        int
+	Name      string
+	Email     string
+	Password  string
+	ACL       []string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
+// New is a function that returns an instance of admin
+// based on the name, email and password
+// NOTE: using this function will use the DefaultACL
 func New(name, email, password string) *Admin {
 	a := &Admin{
 		Name:     name,
@@ -33,6 +42,8 @@ func New(name, email, password string) *Admin {
 	return a
 }
 
+// NewWithACL is a function that return an instance of an admin
+// based on the name, email, password and ACL
 func NewWithACL(name, email, password string, acl []string) *Admin {
 	a := &Admin{
 		Name:     name,
@@ -61,16 +72,18 @@ func (a *Admin) Register() error {
 		return err
 	}
 	defer stmt.Close()
-	var adminId int
-	err = stmt.QueryRow(a.Name, a.Email, a.Password, pq.Array(a.ACL)).Scan(&adminId)
+	var adminID int
+	err = stmt.QueryRow(a.Name, a.Email, a.Password, pq.Array(a.ACL)).Scan(&adminID)
 	if err != nil {
 		return err
 	}
 	// set the adminId to the instance
-	a.ID = adminId
+	a.ID = adminID
 	return nil
 }
 
+// Login is a function that returns an instance of an admin is
+// successcful or returns an error if there was some of error
 func Login(email, password string) (*Admin, error) {
 	query := `SELECT * FROM admins WHERE email=$1`
 	stmt, err := db.Conn.Prepare(query)

@@ -1,3 +1,6 @@
+// Package utils provides some utility function for the entire api server
+// it houses all the code for the middlewares that are deployed on the
+// gRPC server
 package utils
 
 import (
@@ -9,7 +12,9 @@ import (
 )
 
 var (
-	NotAuthenicated = errors.New("user is not autenticated for this RPC call")
+	// ErrNotAuthenicated is a default error that is sent to the user if they are
+	// trying to access a secure RPC call
+	ErrNotAuthenicated = errors.New("user is not autenticated for this RPC call")
 )
 
 func authenticate(ctx context.Context) error {
@@ -19,7 +24,7 @@ func authenticate(ctx context.Context) error {
 	}
 	token, ok := md["authorization"]
 	if !ok {
-		return NotAuthenicated
+		return ErrNotAuthenicated
 	}
 	bearerToken := strings.Split(token[0], " ")
 	return authenticateJWTToken(bearerToken[1])

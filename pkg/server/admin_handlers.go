@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// CreateAdmin is a method on the SponsorServer that is used to create an admin and save it to the database
 func (s *SponsorServer) CreateAdmin(ctx context.Context, req *api.CreateAdminRequest) (*api.CreateAdminResponse, error) {
 	admin := admin.New(req.Name, req.Email, req.PasswordPlainText)
 	if err := admin.Register(); err != nil {
@@ -26,14 +27,19 @@ func (s *SponsorServer) CreateAdmin(ctx context.Context, req *api.CreateAdminReq
 	}, nil
 }
 
+// GetAdmin is a method on the SponsorServer that is used to get information of an admin
 func (s *SponsorServer) GetAdmin(ctx context.Context, req *api.GetAdminRequest) (*api.GetAdminResponse, error) {
 	return &api.GetAdminResponse{}, nil
 }
 
+// DeleteAdmin is a method on the SponsorServer that is used to delete an admin from the database
 func (s *SponsorServer) DeleteAdmin(ctx context.Context, req *api.DeleteAdminRequest) (*api.DeleteAdminResponse, error) {
 	return &api.DeleteAdminResponse{}, nil
 }
 
+// LoginAdmin is a methodd on the SponsorServer that is used to sign in an admin
+// this method also deals with allocating a signed JWT token to the client for
+// making authenticated requests
 func (s *SponsorServer) LoginAdmin(ctx context.Context, req *api.LoginAdminRequest) (*api.LoginAdminResponse, error) {
 	// TODO: look up database for the user
 	admin, err := admin.Login(req.Email, req.Password)

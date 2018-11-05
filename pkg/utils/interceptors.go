@@ -20,6 +20,8 @@ var unauthenticatedRPC = map[string][]string{
 	},
 }
 
+// UnaryAuthInterceptor is a gRPC middleware that intercepts all
+// unary RPC calls and check whether they are authenticated
 func UnaryAuthInterceptor(ctx context.Context,
 	req interface{}, info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (interface{}, error) {

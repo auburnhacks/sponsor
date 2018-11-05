@@ -1,3 +1,4 @@
+// Package server provides all the implementation for the RPC handlers
 package server
 
 import (
@@ -18,21 +19,36 @@ var (
 	signingKey = []byte("supersecret")
 )
 
+// SponsorServer is a struct that implements the SponsorServiceServer interface
+// that is auto-gernerated by gRPC
 type SponsorServer struct {
 	DB   *mongo.Client
 	quit chan struct{}
 	tWg  sync.WaitGroup
 }
 
+// ListenAndServe is a helper func that invokes the and serves the gRPC server
+// and the gateway in separate goroutines
 func ListenAndServe(srv *SponsorServer, l net.Listener, listenAddr, serviceEndpoint *string) {
 	go srv.serveGRPC(l)
 	go srv.serveGateway(listenAddr, serviceEndpoint)
 }
 
+// NewSponsorServer is a constructer that returns an instance of the SponsorServer
 func NewSponsorServer() *SponsorServer {
 	return &SponsorServer{
 		quit: make(chan struct{}, 2),
 	}
+}
+
+// Shutdown is a function that wait on the quit channel and signals the gateway
+// and gRPC server to shutdown
+func (s *SponsorServer) Shutdown() {
+	s.quit <- struct{}{}
+	s.tWg.Wait()
+	s.quit <- struct{}{}
+	s.tWg.Wait()
+	close(s.quit)
 }
 
 func (s *SponsorServer) serveGRPC(l net.Listener) {
@@ -75,12 +91,4 @@ func (s *SponsorServer) serveGateway(listenAddr, serviceEndpoint *string) {
 	s.tWg.Add(1)
 	srv.Shutdown(ctx)
 	s.tWg.Done()
-}
-
-func (s *SponsorServer) Shutdown() {
-	s.quit <- struct{}{}
-	s.tWg.Wait()
-	s.quit <- struct{}{}
-	s.tWg.Wait()
-	close(s.quit)
 }

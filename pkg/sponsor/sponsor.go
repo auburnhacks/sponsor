@@ -41,6 +41,40 @@ func New(name, email, password string, company *Company, acl string) *Sponsor {
 	return s
 }
 
+// ByID is a function that gets an admin from the given ID
+func ByID(sponsorID string) (*Sponsor, error) {
+	query := `SELECT * FROM sponsors WHERE id=:id`
+	stmt, err := db.Conn.PrepareNamed(query)
+	if err != nil {
+		return nil, err
+	}
+	s := new(Sponsor)
+	err = stmt.Get(s, map[string]interface{}{
+		"id": sponsorID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return s, nil
+}
+
+// ByEmail is a function that gets an admin from the given email
+func ByEmail(sponsorEmail string) (*Sponsor, error) {
+	query := `SELECT * FROM sponsors WHERE email=:email`
+	stmt, err := db.Conn.PrepareNamed(query)
+	if err != nil {
+		return nil, err
+	}
+	s := new(Sponsor)
+	err = stmt.Get(s, map[string]interface{}{
+		"email": sponsorEmail,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return s, nil
+}
+
 // Register is a function that is used when a new instance of a sponsor has to
 // be saved to the database and the in-memory instance has to be updated with
 // the lastInsertedID

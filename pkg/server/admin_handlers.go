@@ -30,13 +30,17 @@ func (s *SponsorServer) CreateAdmin(ctx context.Context, req *api.CreateAdminReq
 
 // GetAdmin is a method on the SponsorServer that is used to get information of an admin
 func (s *SponsorServer) GetAdmin(ctx context.Context, req *api.GetAdminRequest) (*api.GetAdminResponse, error) {
-	admin, err := admin.GetAdminByID(req.AdminID)
+	admin, err := admin.ByID(req.AdminID)
 	if err != nil {
 		return nil, err
 	}
-	admin.Password = ""
 	return &api.GetAdminResponse{
-		Admin: &api.Admin{},
+		Admin: &api.Admin{
+			AdminID: admin.ID,
+			Name:    admin.Name,
+			Email:   admin.Email,
+			ACL:     admin.ACL,
+		},
 	}, nil
 }
 

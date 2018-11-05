@@ -108,7 +108,7 @@ message Admin {
     string name = 2;
     string email = 3;
     string password = 4;
-    repeated string ACL = 5;
+    string ACL = 5;
 }
 
 message Sponsor {
@@ -117,7 +117,7 @@ message Sponsor {
     string email = 3;
     string password = 4;
     Company company = 5;
-    repeated string ACL = 6;
+    string ACL = 6;
 }
 
 message Company {

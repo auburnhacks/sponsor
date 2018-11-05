@@ -3,17 +3,18 @@
 package admin
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/db"
-	"github.com/lib/pq"
 	"github.com/pkg/errors"
 )
 
 // DefaultACL is a variables that is used for all admins if no ACL list is
 // provided during signup
-var DefaultACL = []string{"read", "update"}
+var DefaultACL = "read,update"
+
+// ErrInvalidAuth is an error that is returns when there is a failed login attempt
+var ErrInvalidAuth = errors.New("admin: invalud credentials provided")
 
 // Admin is a struct that is the highest entity in the system
 // It has write and read access to any thing in the database.
@@ -24,7 +25,7 @@ type Admin struct {
 	Name      string    `db:"name"`
 	Email     string    `db:"email"`
 	Password  string    `db:"password"`
-	ACL       []string  `db:"acl"`
+	ACL       string    `db:"acl"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
 }
@@ -44,7 +45,7 @@ func New(name, email, password string) *Admin {
 
 // NewWithACL is a function that return an instance of an admin
 // based on the name, email, password and ACL
-func NewWithACL(name, email, password string, acl []string) *Admin {
+func NewWithACL(name, email, password string, acl string) *Admin {
 	a := &Admin{
 		Name:     name,
 		Email:    email,
@@ -77,7 +78,7 @@ func (a *Admin) Register() error {
 		"name":     a.Name,
 		"email":    a.Email,
 		"password": a.Password,
-		"acl":      pq.Array(a.ACL),
+		"acl":      a.ACL,
 	}).Scan(&id)
 	if err != nil {
 		return err
@@ -89,23 +90,46 @@ func (a *Admin) Register() error {
 // Login is a function that returns an instance of an admin is
 // successcful or returns an error if there was some of error
 func Login(email, password string) (*Admin, error) {
-	query := `SELECT * FROM admins WHERE email=$1`
-	stmt, err := db.Conn.Prepare(query)
+	a, err := ByEmail(email)
 	if err != nil {
 		return nil, err
 	}
-	var a Admin
-	err = stmt.QueryRow(email).Scan(&a.ID, &a.Name, &a.Email, &a.Password, pq.Array(&a.ACL), &a.CreatedAt, &a.UpdatedAt)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, errors.Wrapf(err, "user with email %s not found", email)
-		}
-		return nil, err
+	if a.Password != password {
+		return nil, ErrInvalidAuth
 	}
-	return &a, nil
+	return a, nil
 }
 
-// GetAdminByID is a function that gets an admin from the given ID
-func GetAdminByID(adminID string) (*Admin, error) {
-	return &Admin{}, nil
+// ByID is a function that gets an admin from the given ID
+func ByID(adminID string) (*Admin, error) {
+	query := `SELECT * FROM admins WHERE id=:id`
+	stmt, err := db.Conn.PrepareNamed(query)
+	if err != nil {
+		return nil, err
+	}
+	a := new(Admin)
+	err = stmt.Get(a, map[string]interface{}{
+		"id": adminID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return a, nil
+}
+
+// ByEmail is a function that gets an admin from the given email
+func ByEmail(adminEmail string) (*Admin, error) {
+	query := `SELECT * FROM admins WHERE email=:email`
+	stmt, err := db.Conn.PrepareNamed(query)
+	if err != nil {
+		return nil, err
+	}
+	a := new(Admin)
+	err = stmt.Get(a, map[string]interface{}{
+		"email": adminEmail,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return a, nil
 }

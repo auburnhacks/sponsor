@@ -6,12 +6,11 @@ import (
 	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/db"
-	"github.com/lib/pq"
 )
 
 // DefaultACL is a variables that is used for all admins if no ACL list is
 // provided during signup
-var DefaultACL = []string{"read"}
+var DefaultACL = "read"
 
 // Sponsor is a struc that repesents a sponsor in the system and the database
 type Sponsor struct {
@@ -20,7 +19,7 @@ type Sponsor struct {
 	Email     string    `db:"email"`
 	Password  string    `db:"password"`
 	Company   *Company  `db:"company_id"`
-	ACL       []string  `db:"acl"`
+	ACL       string    `db:"acl"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
 }
@@ -28,13 +27,13 @@ type Sponsor struct {
 // New returns a instance of a Sponsor it uses the input parameters but
 // if no ACL list is provided then it defaults to the DefaultACL list in the
 // package definition
-func New(name, email, password string, company *Company, acl []string) *Sponsor {
+func New(name, email, password string, company *Company, acl string) *Sponsor {
 	s := &Sponsor{
 		Name:     name,
 		Password: password,
 		Company:  company,
 	}
-	if acl == nil {
+	if acl == "" {
 		s.ACL = DefaultACL
 	} else if len(acl) == 0 {
 		s.ACL = DefaultACL
@@ -59,7 +58,7 @@ func (s *Sponsor) Register() error {
 		"email":    s.Email,
 		"password": s.Password,
 		"company":  s.Company.ID,
-		"acl":      pq.Array(s.ACL),
+		"acl":      s.ACL,
 	}).Scan(&id)
 	if err != nil {
 		return err

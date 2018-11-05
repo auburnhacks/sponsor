@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS admins (
     name text NOT NULL,
     email text NOT NULL,
     password text NOT NULL,
-    acl text ARRAY,
+    acl text NOT NULL,
     created_at timestamp DEFAULT NOW() NOT NULL,
     updated_at timestamp DEFAULT NOW() NOT NULL
 );
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS sponsors (
     email text NOT NULL,
     password text NOT NULL,
     company_id UUID REFERENCES company(id),
-    acl text ARRAY,
+    acl text NOT NULL,
     created_at timestamp DEFAULT NOW() NOT NULL,
     updated_at timestamp DEFAULT NOW() NOT NULL
 );

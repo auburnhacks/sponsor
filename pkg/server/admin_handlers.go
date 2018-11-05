@@ -20,8 +20,9 @@ func (s *SponsorServer) CreateAdmin(ctx context.Context, req *api.CreateAdminReq
 	log.Debugf("%+v", admin)
 	return &api.CreateAdminResponse{
 		Admin: &api.Admin{
+			Name:    admin.Name,
 			Email:   admin.Email,
-			AdminID: int64(admin.ID),
+			AdminID: admin.ID,
 			ACL:     admin.ACL,
 		},
 	}, nil
@@ -29,7 +30,7 @@ func (s *SponsorServer) CreateAdmin(ctx context.Context, req *api.CreateAdminReq
 
 // GetAdmin is a method on the SponsorServer that is used to get information of an admin
 func (s *SponsorServer) GetAdmin(ctx context.Context, req *api.GetAdminRequest) (*api.GetAdminResponse, error) {
-	admin, err := admin.GetAdminByID(int(req.AdminID))
+	admin, err := admin.GetAdminByID(req.AdminID)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +66,7 @@ func (s *SponsorServer) LoginAdmin(ctx context.Context, req *api.LoginAdminReque
 	return &api.LoginAdminResponse{
 		Token: tokenStr,
 		Admin: &api.Admin{
-			AdminID: int64(admin.ID),
+			AdminID: admin.ID,
 			Name:    admin.Name,
 			Email:   admin.Email,
 			ACL:     admin.ACL,

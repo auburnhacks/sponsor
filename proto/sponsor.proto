@@ -45,6 +45,12 @@ service SponsorService {
             body: "*"
         };
     }
+    rpc CreateCompany(CreateCompanyRequest) returns (CreateCompanyResponse) {
+        option (google.api.http) = {
+            post: "/v1/sponsor/company"
+            body: "*"
+        };
+    }
 }
 
 message CreateSponsorRequest {
@@ -53,6 +59,15 @@ message CreateSponsorRequest {
 
 message CreateSponsorResponse {
     Sponsor sponsor = 1;
+}
+
+message CreateCompanyRequest {
+    string name = 1;
+    string logo = 2;
+}
+
+message CreateCompanyResponse {
+    Company company = 1;
 }
 
 message LoginAdminRequest {
@@ -82,14 +97,14 @@ message CreateAdminResponse {
 }
 
 message GetAdminRequest {
-    int64 adminID = 1;
+    string adminID = 1;
 }
 message GetAdminResponse {
     Admin admin = 1;
 }
 
 message Admin {
-    int64 adminID = 1;
+    string adminID = 1;
     string name = 2;
     string email = 3;
     string password = 4;
@@ -97,10 +112,16 @@ message Admin {
 }
 
 message Sponsor {
-    int64 id = 1;
+    string id = 1;
     string name = 2;
     string email = 3;
     string password = 4;
-    string company = 5;
+    Company company = 5;
     repeated string ACL = 6;
+}
+
+message Company {
+    string id = 1;
+	string name = 2;
+	string logo = 3;
 }

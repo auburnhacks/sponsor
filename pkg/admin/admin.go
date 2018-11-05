@@ -20,13 +20,13 @@ var DefaultACL = []string{"read", "update"}
 // More fine grained controlled can be given based on the ACL
 // property
 type Admin struct {
-	ID        int
-	Name      string
-	Email     string
-	Password  string
-	ACL       []string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        string    `db:"id"`
+	Name      string    `db:"name"`
+	Email     string    `db:"email"`
+	Password  string    `db:"password"`
+	ACL       []string  `db:"acl"`
+	CreatedAt time.Time `db:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
 
 // New is a function that returns an instance of admin
@@ -66,19 +66,23 @@ func (a *Admin) Save() error {
 
 // Register is only called once when the admin first signs up
 func (a *Admin) Register() error {
-	query := `INSERT INTO admins(name, email, password, acl) VALUES($1, $2, $3, $4) RETURNING id`
-	stmt, err := db.Conn.Prepare(query)
+	query := `INSERT INTO admins(name, email, password, acl) VALUES(:name, :email, :password, :acl) RETURNING id`
+	stmt, err := db.Conn.PrepareNamed(query)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	var adminID int
-	err = stmt.QueryRow(a.Name, a.Email, a.Password, pq.Array(a.ACL)).Scan(&adminID)
+	var id string
+	err = stmt.QueryRow(map[string]interface{}{
+		"name":     a.Name,
+		"email":    a.Email,
+		"password": a.Password,
+		"acl":      pq.Array(a.ACL),
+	}).Scan(&id)
 	if err != nil {
 		return err
 	}
-	// set the adminId to the instance
-	a.ID = adminID
+	a.ID = id
 	return nil
 }
 
@@ -102,19 +106,6 @@ func Login(email, password string) (*Admin, error) {
 }
 
 // GetAdminByID is a function that gets an admin from the given ID
-func GetAdminByID(adminID int) (*Admin, error) {
-	query := `SELECT * FROM admins WHERE id=$1`
-	stmt, err := db.Conn.Prepare(query)
-	if err != nil {
-		return nil, err
-	}
-	var a Admin
-	err = stmt.QueryRow(adminID).Scan(&a.ID, &a.Name, &a.Email, &a.Password, pq.Array(&a.ACL), &a.CreatedAt, &a.UpdatedAt)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, errors.Wrapf(err, "admin: error getting admin with id %d", adminID)
-		}
-		return nil, err
-	}
-	return &a, nil
+func GetAdminByID(adminID string) (*Admin, error) {
+	return &Admin{}, nil
 }

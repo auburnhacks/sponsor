@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/admin"
@@ -14,18 +15,22 @@ import (
 
 // CreateAdmin is a method on the SponsorServer that is used to create an admin and save it to the database
 func (ss *SponsorServer) CreateAdmin(ctx context.Context, req *api.CreateAdminRequest) (*api.CreateAdminResponse, error) {
-	admin := admin.New(req.Name, req.Email, req.PasswordPlainText)
-	if err := admin.Register(); err != nil {
+	a, _ := admin.ByEmail(req.Email)
+	if a != nil {
+		return nil, fmt.Errorf("email %s already exists", req.Email)
+	}
+	a = admin.New(req.Name, req.Email, req.PasswordPlainText)
+	if err := a.Register(); err != nil {
 		log.Errorf("error while registering admin: %v", err)
 		return nil, err
 	}
-	log.Debugf("%+v", admin)
+	log.Debugf("%+v", a)
 	return &api.CreateAdminResponse{
 		Admin: &api.Admin{
-			Name:    admin.Name,
-			Email:   admin.Email,
-			AdminID: admin.ID,
-			ACL:     admin.ACL,
+			Name:    a.Name,
+			Email:   a.Email,
+			AdminID: a.ID,
+			ACL:     a.ACL,
 		},
 	}, nil
 }

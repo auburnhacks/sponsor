@@ -23,6 +23,178 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type UpdateSponsorRequest struct {
+	SponsorID            string   `protobuf:"bytes,1,opt,name=sponsorID,proto3" json:"sponsorID,omitempty"`
+	Sponsor              *Sponsor `protobuf:"bytes,2,opt,name=sponsor,proto3" json:"sponsor,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateSponsorRequest) Reset()         { *m = UpdateSponsorRequest{} }
+func (m *UpdateSponsorRequest) String() string { return proto.CompactTextString(m) }
+func (*UpdateSponsorRequest) ProtoMessage()    {}
+func (*UpdateSponsorRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b93c2e50814def43, []int{0}
+}
+
+func (m *UpdateSponsorRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateSponsorRequest.Unmarshal(m, b)
+}
+func (m *UpdateSponsorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateSponsorRequest.Marshal(b, m, deterministic)
+}
+func (m *UpdateSponsorRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateSponsorRequest.Merge(m, src)
+}
+func (m *UpdateSponsorRequest) XXX_Size() int {
+	return xxx_messageInfo_UpdateSponsorRequest.Size(m)
+}
+func (m *UpdateSponsorRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateSponsorRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateSponsorRequest proto.InternalMessageInfo
+
+func (m *UpdateSponsorRequest) GetSponsorID() string {
+	if m != nil {
+		return m.SponsorID
+	}
+	return ""
+}
+
+func (m *UpdateSponsorRequest) GetSponsor() *Sponsor {
+	if m != nil {
+		return m.Sponsor
+	}
+	return nil
+}
+
+type UpdateSponsorResponse struct {
+	Sponsor              *Sponsor `protobuf:"bytes,1,opt,name=sponsor,proto3" json:"sponsor,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateSponsorResponse) Reset()         { *m = UpdateSponsorResponse{} }
+func (m *UpdateSponsorResponse) String() string { return proto.CompactTextString(m) }
+func (*UpdateSponsorResponse) ProtoMessage()    {}
+func (*UpdateSponsorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b93c2e50814def43, []int{1}
+}
+
+func (m *UpdateSponsorResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateSponsorResponse.Unmarshal(m, b)
+}
+func (m *UpdateSponsorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateSponsorResponse.Marshal(b, m, deterministic)
+}
+func (m *UpdateSponsorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateSponsorResponse.Merge(m, src)
+}
+func (m *UpdateSponsorResponse) XXX_Size() int {
+	return xxx_messageInfo_UpdateSponsorResponse.Size(m)
+}
+func (m *UpdateSponsorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateSponsorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateSponsorResponse proto.InternalMessageInfo
+
+func (m *UpdateSponsorResponse) GetSponsor() *Sponsor {
+	if m != nil {
+		return m.Sponsor
+	}
+	return nil
+}
+
+type UpdateAdminRequest struct {
+	AdminID              string   `protobuf:"bytes,1,opt,name=adminID,proto3" json:"adminID,omitempty"`
+	Admin                *Admin   `protobuf:"bytes,2,opt,name=admin,proto3" json:"admin,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateAdminRequest) Reset()         { *m = UpdateAdminRequest{} }
+func (m *UpdateAdminRequest) String() string { return proto.CompactTextString(m) }
+func (*UpdateAdminRequest) ProtoMessage()    {}
+func (*UpdateAdminRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b93c2e50814def43, []int{2}
+}
+
+func (m *UpdateAdminRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateAdminRequest.Unmarshal(m, b)
+}
+func (m *UpdateAdminRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateAdminRequest.Marshal(b, m, deterministic)
+}
+func (m *UpdateAdminRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateAdminRequest.Merge(m, src)
+}
+func (m *UpdateAdminRequest) XXX_Size() int {
+	return xxx_messageInfo_UpdateAdminRequest.Size(m)
+}
+func (m *UpdateAdminRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateAdminRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateAdminRequest proto.InternalMessageInfo
+
+func (m *UpdateAdminRequest) GetAdminID() string {
+	if m != nil {
+		return m.AdminID
+	}
+	return ""
+}
+
+func (m *UpdateAdminRequest) GetAdmin() *Admin {
+	if m != nil {
+		return m.Admin
+	}
+	return nil
+}
+
+type UpdateAdminResponse struct {
+	Admin                *Admin   `protobuf:"bytes,1,opt,name=admin,proto3" json:"admin,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UpdateAdminResponse) Reset()         { *m = UpdateAdminResponse{} }
+func (m *UpdateAdminResponse) String() string { return proto.CompactTextString(m) }
+func (*UpdateAdminResponse) ProtoMessage()    {}
+func (*UpdateAdminResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b93c2e50814def43, []int{3}
+}
+
+func (m *UpdateAdminResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UpdateAdminResponse.Unmarshal(m, b)
+}
+func (m *UpdateAdminResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UpdateAdminResponse.Marshal(b, m, deterministic)
+}
+func (m *UpdateAdminResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateAdminResponse.Merge(m, src)
+}
+func (m *UpdateAdminResponse) XXX_Size() int {
+	return xxx_messageInfo_UpdateAdminResponse.Size(m)
+}
+func (m *UpdateAdminResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateAdminResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateAdminResponse proto.InternalMessageInfo
+
+func (m *UpdateAdminResponse) GetAdmin() *Admin {
+	if m != nil {
+		return m.Admin
+	}
+	return nil
+}
+
 type CreateSponsorRequest struct {
 	Sponsor              *Sponsor `protobuf:"bytes,1,opt,name=sponsor,proto3" json:"sponsor,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -34,7 +206,7 @@ func (m *CreateSponsorRequest) Reset()         { *m = CreateSponsorRequest{} }
 func (m *CreateSponsorRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateSponsorRequest) ProtoMessage()    {}
 func (*CreateSponsorRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{0}
+	return fileDescriptor_b93c2e50814def43, []int{4}
 }
 
 func (m *CreateSponsorRequest) XXX_Unmarshal(b []byte) error {
@@ -73,7 +245,7 @@ func (m *CreateSponsorResponse) Reset()         { *m = CreateSponsorResponse{} }
 func (m *CreateSponsorResponse) String() string { return proto.CompactTextString(m) }
 func (*CreateSponsorResponse) ProtoMessage()    {}
 func (*CreateSponsorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{1}
+	return fileDescriptor_b93c2e50814def43, []int{5}
 }
 
 func (m *CreateSponsorResponse) XXX_Unmarshal(b []byte) error {
@@ -113,7 +285,7 @@ func (m *CreateCompanyRequest) Reset()         { *m = CreateCompanyRequest{} }
 func (m *CreateCompanyRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateCompanyRequest) ProtoMessage()    {}
 func (*CreateCompanyRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{2}
+	return fileDescriptor_b93c2e50814def43, []int{6}
 }
 
 func (m *CreateCompanyRequest) XXX_Unmarshal(b []byte) error {
@@ -159,7 +331,7 @@ func (m *CreateCompanyResponse) Reset()         { *m = CreateCompanyResponse{} }
 func (m *CreateCompanyResponse) String() string { return proto.CompactTextString(m) }
 func (*CreateCompanyResponse) ProtoMessage()    {}
 func (*CreateCompanyResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{3}
+	return fileDescriptor_b93c2e50814def43, []int{7}
 }
 
 func (m *CreateCompanyResponse) XXX_Unmarshal(b []byte) error {
@@ -199,7 +371,7 @@ func (m *LoginAdminRequest) Reset()         { *m = LoginAdminRequest{} }
 func (m *LoginAdminRequest) String() string { return proto.CompactTextString(m) }
 func (*LoginAdminRequest) ProtoMessage()    {}
 func (*LoginAdminRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{4}
+	return fileDescriptor_b93c2e50814def43, []int{8}
 }
 
 func (m *LoginAdminRequest) XXX_Unmarshal(b []byte) error {
@@ -246,7 +418,7 @@ func (m *LoginAdminResponse) Reset()         { *m = LoginAdminResponse{} }
 func (m *LoginAdminResponse) String() string { return proto.CompactTextString(m) }
 func (*LoginAdminResponse) ProtoMessage()    {}
 func (*LoginAdminResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{5}
+	return fileDescriptor_b93c2e50814def43, []int{9}
 }
 
 func (m *LoginAdminResponse) XXX_Unmarshal(b []byte) error {
@@ -292,7 +464,7 @@ func (m *DeleteAdminRequest) Reset()         { *m = DeleteAdminRequest{} }
 func (m *DeleteAdminRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteAdminRequest) ProtoMessage()    {}
 func (*DeleteAdminRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{6}
+	return fileDescriptor_b93c2e50814def43, []int{10}
 }
 
 func (m *DeleteAdminRequest) XXX_Unmarshal(b []byte) error {
@@ -331,7 +503,7 @@ func (m *DeleteAdminResponse) Reset()         { *m = DeleteAdminResponse{} }
 func (m *DeleteAdminResponse) String() string { return proto.CompactTextString(m) }
 func (*DeleteAdminResponse) ProtoMessage()    {}
 func (*DeleteAdminResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{7}
+	return fileDescriptor_b93c2e50814def43, []int{11}
 }
 
 func (m *DeleteAdminResponse) XXX_Unmarshal(b []byte) error {
@@ -372,7 +544,7 @@ func (m *CreateAdminRequest) Reset()         { *m = CreateAdminRequest{} }
 func (m *CreateAdminRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateAdminRequest) ProtoMessage()    {}
 func (*CreateAdminRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{8}
+	return fileDescriptor_b93c2e50814def43, []int{12}
 }
 
 func (m *CreateAdminRequest) XXX_Unmarshal(b []byte) error {
@@ -425,7 +597,7 @@ func (m *CreateAdminResponse) Reset()         { *m = CreateAdminResponse{} }
 func (m *CreateAdminResponse) String() string { return proto.CompactTextString(m) }
 func (*CreateAdminResponse) ProtoMessage()    {}
 func (*CreateAdminResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{9}
+	return fileDescriptor_b93c2e50814def43, []int{13}
 }
 
 func (m *CreateAdminResponse) XXX_Unmarshal(b []byte) error {
@@ -464,7 +636,7 @@ func (m *GetAdminRequest) Reset()         { *m = GetAdminRequest{} }
 func (m *GetAdminRequest) String() string { return proto.CompactTextString(m) }
 func (*GetAdminRequest) ProtoMessage()    {}
 func (*GetAdminRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{10}
+	return fileDescriptor_b93c2e50814def43, []int{14}
 }
 
 func (m *GetAdminRequest) XXX_Unmarshal(b []byte) error {
@@ -503,7 +675,7 @@ func (m *GetAdminResponse) Reset()         { *m = GetAdminResponse{} }
 func (m *GetAdminResponse) String() string { return proto.CompactTextString(m) }
 func (*GetAdminResponse) ProtoMessage()    {}
 func (*GetAdminResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{11}
+	return fileDescriptor_b93c2e50814def43, []int{15}
 }
 
 func (m *GetAdminResponse) XXX_Unmarshal(b []byte) error {
@@ -546,7 +718,7 @@ func (m *Admin) Reset()         { *m = Admin{} }
 func (m *Admin) String() string { return proto.CompactTextString(m) }
 func (*Admin) ProtoMessage()    {}
 func (*Admin) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{12}
+	return fileDescriptor_b93c2e50814def43, []int{16}
 }
 
 func (m *Admin) XXX_Unmarshal(b []byte) error {
@@ -618,7 +790,7 @@ func (m *Sponsor) Reset()         { *m = Sponsor{} }
 func (m *Sponsor) String() string { return proto.CompactTextString(m) }
 func (*Sponsor) ProtoMessage()    {}
 func (*Sponsor) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{13}
+	return fileDescriptor_b93c2e50814def43, []int{17}
 }
 
 func (m *Sponsor) XXX_Unmarshal(b []byte) error {
@@ -694,7 +866,7 @@ func (m *Company) Reset()         { *m = Company{} }
 func (m *Company) String() string { return proto.CompactTextString(m) }
 func (*Company) ProtoMessage()    {}
 func (*Company) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b93c2e50814def43, []int{14}
+	return fileDescriptor_b93c2e50814def43, []int{18}
 }
 
 func (m *Company) XXX_Unmarshal(b []byte) error {
@@ -737,6 +909,10 @@ func (m *Company) GetLogo() string {
 }
 
 func init() {
+	proto.RegisterType((*UpdateSponsorRequest)(nil), "proto.UpdateSponsorRequest")
+	proto.RegisterType((*UpdateSponsorResponse)(nil), "proto.UpdateSponsorResponse")
+	proto.RegisterType((*UpdateAdminRequest)(nil), "proto.UpdateAdminRequest")
+	proto.RegisterType((*UpdateAdminResponse)(nil), "proto.UpdateAdminResponse")
 	proto.RegisterType((*CreateSponsorRequest)(nil), "proto.CreateSponsorRequest")
 	proto.RegisterType((*CreateSponsorResponse)(nil), "proto.CreateSponsorResponse")
 	proto.RegisterType((*CreateCompanyRequest)(nil), "proto.CreateCompanyRequest")
@@ -757,46 +933,52 @@ func init() {
 func init() { proto.RegisterFile("sponsor.proto", fileDescriptor_b93c2e50814def43) }
 
 var fileDescriptor_b93c2e50814def43 = []byte{
-	// 619 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0xe1, 0x8a, 0xd3, 0x40,
-	0x10, 0x26, 0x69, 0x73, 0xad, 0x53, 0xaf, 0xb6, 0xdb, 0xda, 0xcb, 0xe5, 0xaa, 0xc8, 0x8a, 0x70,
-	0x54, 0x69, 0xb0, 0x82, 0xe0, 0xfd, 0x10, 0x4b, 0x4f, 0x44, 0x38, 0x44, 0x7a, 0x3e, 0x80, 0xe9,
-	0x75, 0x29, 0xb1, 0x69, 0xb6, 0x36, 0xf1, 0xf4, 0x10, 0xff, 0xf8, 0x0a, 0xfe, 0xf4, 0xb1, 0x7c,
-	0x05, 0x1f, 0xc2, 0x9f, 0x92, 0xcd, 0x6c, 0x92, 0x4d, 0xd2, 0xe3, 0x0e, 0xee, 0x57, 0xb3, 0x3b,
-	0x33, 0xdf, 0xf7, 0xcd, 0xec, 0xcc, 0x14, 0x76, 0x83, 0x35, 0xf7, 0x03, 0xbe, 0x19, 0xae, 0x37,
-	0x3c, 0xe4, 0xc4, 0x10, 0x3f, 0x56, 0x7f, 0xc1, 0xf9, 0xc2, 0x63, 0xb6, 0xb3, 0x76, 0x6d, 0xc7,
-	0xf7, 0x79, 0xe8, 0x84, 0x2e, 0xf7, 0x83, 0xd8, 0x89, 0xbe, 0x82, 0xee, 0x64, 0xc3, 0x9c, 0x90,
-	0x9d, 0xc6, 0xb1, 0x53, 0xf6, 0xf9, 0x0b, 0x0b, 0x42, 0x72, 0x08, 0x35, 0x44, 0x33, 0xb5, 0x07,
-	0xda, 0x61, 0x63, 0xd4, 0x8c, 0x03, 0x86, 0xd2, 0x4f, 0x9a, 0xe9, 0x18, 0xee, 0xe6, 0x10, 0x84,
-	0x85, 0x5d, 0x03, 0xe2, 0xa5, 0x14, 0x31, 0xe1, 0xab, 0xb5, 0xe3, 0x5f, 0x48, 0x11, 0x04, 0xaa,
-	0xbe, 0xb3, 0x62, 0x22, 0xfc, 0xd6, 0x54, 0x7c, 0x47, 0x77, 0x1e, 0x5f, 0x70, 0x53, 0x8f, 0xef,
-	0xa2, 0xef, 0x54, 0x42, 0x12, 0x9f, 0x4a, 0x38, 0x8b, 0xaf, 0x72, 0x12, 0xa4, 0xa3, 0x34, 0xd3,
-	0xd7, 0xd0, 0x3e, 0xe1, 0x0b, 0xd7, 0x1f, 0xcf, 0x57, 0xae, 0x2f, 0xf9, 0xbb, 0x60, 0xb0, 0x95,
-	0xe3, 0x7a, 0x28, 0x20, 0x3e, 0x10, 0x0b, 0xea, 0x6b, 0x27, 0x08, 0xbe, 0xf2, 0xcd, 0x1c, 0x55,
-	0x24, 0x67, 0xfa, 0x0e, 0x48, 0x16, 0x06, 0x65, 0x74, 0xc1, 0x08, 0xf9, 0x92, 0xf9, 0x12, 0x47,
-	0x1c, 0x08, 0x05, 0xc3, 0x89, 0xdc, 0x04, 0x48, 0x63, 0x74, 0x1b, 0xa5, 0xc5, 0xa1, 0xb1, 0x89,
-	0x0e, 0x81, 0x1c, 0x33, 0x8f, 0x85, 0x4c, 0xd1, 0x65, 0x42, 0x4d, 0x98, 0xdf, 0x1e, 0x23, 0xa2,
-	0x3c, 0xd2, 0x47, 0xd0, 0x51, 0xfc, 0x51, 0x40, 0x13, 0x74, 0xbe, 0x14, 0xbe, 0xf5, 0xa9, 0xce,
-	0x97, 0xd4, 0x03, 0x12, 0x17, 0x4c, 0x81, 0x2d, 0x2b, 0x77, 0x52, 0x02, 0x3d, 0x5b, 0x82, 0x27,
-	0xd0, 0x96, 0x29, 0xbf, 0xf7, 0x1c, 0xd7, 0xff, 0xc0, 0xbe, 0x85, 0x66, 0x45, 0x78, 0x14, 0x0d,
-	0xf4, 0x05, 0x74, 0x14, 0x36, 0x14, 0x95, 0xe4, 0xaf, 0x6d, 0xcf, 0xff, 0x31, 0xdc, 0x79, 0xc3,
-	0xc2, 0x2b, 0x26, 0xff, 0x1c, 0x5a, 0xa9, 0xf3, 0x35, 0x48, 0x2e, 0xc0, 0x10, 0xe7, 0xed, 0xd0,
-	0x49, 0x69, 0xf4, 0xb2, 0xd2, 0x54, 0xb6, 0x75, 0x47, 0x55, 0xed, 0x0e, 0xd2, 0x82, 0xca, 0x78,
-	0x72, 0x62, 0x1a, 0xe2, 0x3a, 0xfa, 0xa4, 0xbf, 0x35, 0xa8, 0xe1, 0x38, 0x44, 0x8f, 0xe4, 0xce,
-	0x91, 0x58, 0x77, 0xe7, 0x37, 0xc4, 0x99, 0x19, 0x01, 0xe3, 0xd2, 0x11, 0x90, 0xea, 0x76, 0x52,
-	0x75, 0x63, 0xa8, 0xa1, 0xd7, 0x95, 0xc4, 0xc9, 0xd1, 0xac, 0xa4, 0xa3, 0x39, 0xfa, 0x57, 0x85,
-	0x26, 0x26, 0x78, 0xca, 0x36, 0xe7, 0xee, 0x19, 0x23, 0x33, 0x68, 0x64, 0xda, 0x81, 0xec, 0x4b,
-	0x3d, 0x85, 0x86, 0xb4, 0xac, 0x32, 0x53, 0xfc, 0xb0, 0xb4, 0xff, 0xf3, 0xcf, 0xdf, 0x5f, 0x7a,
-	0x8f, 0xb6, 0xed, 0xf3, 0xa7, 0x36, 0x2e, 0x12, 0x5b, 0x3c, 0xd7, 0x91, 0x36, 0x20, 0x1f, 0xa1,
-	0x2e, 0x5b, 0x81, 0xf4, 0x10, 0x25, 0xd7, 0x48, 0xd6, 0x5e, 0xe1, 0x1e, 0xa1, 0x1f, 0x0a, 0xe8,
-	0x7b, 0xe4, 0xa0, 0x00, 0x6d, 0x7f, 0xc7, 0x86, 0xf8, 0x41, 0x5c, 0x68, 0x64, 0x26, 0x2d, 0xc9,
-	0xa2, 0x38, 0xad, 0x49, 0x16, 0x25, 0x83, 0x29, 0xa9, 0x06, 0x97, 0x52, 0x31, 0x80, 0x74, 0xa9,
-	0x10, 0x13, 0xe1, 0x0a, 0xeb, 0xca, 0xda, 0x2f, 0xb1, 0x20, 0x0f, 0x15, 0x3c, 0x7d, 0xba, 0x57,
-	0xe4, 0xf1, 0x22, 0xef, 0xa8, 0x66, 0x33, 0xd8, 0x55, 0x16, 0x39, 0x39, 0x50, 0xca, 0xaf, 0xfe,
-	0x41, 0x58, 0xfd, 0x72, 0x23, 0xf2, 0xf5, 0x04, 0x5f, 0x8b, 0x36, 0x32, 0x7c, 0x11, 0xc7, 0x27,
-	0xc9, 0x21, 0xfb, 0x4a, 0xe5, 0x50, 0xf7, 0x7f, 0x8e, 0x23, 0xb7, 0xdc, 0xe9, 0x7d, 0xc1, 0x61,
-	0xd2, 0x4e, 0x36, 0x27, 0x6c, 0xe6, 0x23, 0x6d, 0x30, 0xdb, 0x11, 0xc1, 0xcf, 0xfe, 0x07, 0x00,
-	0x00, 0xff, 0xff, 0x06, 0x73, 0xc9, 0xcc, 0x17, 0x07, 0x00, 0x00,
+	// 712 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x51, 0x6f, 0xd3, 0x30,
+	0x10, 0x56, 0xd2, 0x65, 0xdd, 0xae, 0x6c, 0xac, 0x6e, 0xd7, 0x65, 0x59, 0x41, 0x95, 0x11, 0xa8,
+	0x2a, 0xa8, 0x11, 0x43, 0x42, 0x62, 0x0f, 0x88, 0xaa, 0x43, 0x08, 0x69, 0x42, 0xa8, 0x83, 0x57,
+	0x44, 0xba, 0x5a, 0x55, 0x68, 0x1a, 0x87, 0x26, 0x0c, 0xa6, 0x89, 0x17, 0xfe, 0x02, 0x8f, 0xfc,
+	0x2c, 0x24, 0x7e, 0x01, 0x3f, 0x04, 0xc5, 0xb1, 0x9d, 0x38, 0xc9, 0xaa, 0x56, 0xe2, 0xa9, 0xb1,
+	0xef, 0xfc, 0x7d, 0xdf, 0x9d, 0xef, 0x7c, 0x85, 0x9d, 0x30, 0xa0, 0x7e, 0x48, 0x17, 0xfd, 0x60,
+	0x41, 0x23, 0x8a, 0x0c, 0xf6, 0x63, 0xb5, 0xa7, 0x94, 0x4e, 0x3d, 0x62, 0x3b, 0x81, 0x6b, 0x3b,
+	0xbe, 0x4f, 0x23, 0x27, 0x72, 0xa9, 0x1f, 0x26, 0x4e, 0xf8, 0x03, 0x34, 0xdf, 0x07, 0x13, 0x27,
+	0x22, 0xe7, 0xc9, 0xd9, 0x11, 0xf9, 0xfc, 0x85, 0x84, 0x11, 0x6a, 0xc3, 0x36, 0x47, 0x7b, 0x7d,
+	0x6a, 0x6a, 0x1d, 0xad, 0xbb, 0x3d, 0x4a, 0x37, 0x50, 0x17, 0xaa, 0x7c, 0x61, 0xea, 0x1d, 0xad,
+	0x5b, 0x3b, 0xde, 0x4d, 0xe0, 0xfa, 0x02, 0x45, 0x98, 0xf1, 0x00, 0xf6, 0x73, 0xf8, 0xcc, 0x42,
+	0xb2, 0x10, 0xda, 0x72, 0x88, 0x11, 0xa0, 0x04, 0x62, 0x30, 0x99, 0xbb, 0xbe, 0x10, 0x68, 0x42,
+	0xd5, 0x89, 0xd7, 0x52, 0x9e, 0x58, 0x22, 0x0c, 0x06, 0xfb, 0xe4, 0xd2, 0x6e, 0x71, 0xdc, 0xe4,
+	0x74, 0x62, 0xc2, 0xcf, 0xa0, 0xa1, 0x60, 0x72, 0x51, 0xf2, 0xa8, 0x76, 0xf3, 0xd1, 0x17, 0xd0,
+	0x1c, 0x2e, 0x48, 0x31, 0x63, 0xab, 0x07, 0x34, 0x80, 0xfd, 0x1c, 0xc2, 0xda, 0x39, 0x79, 0x2e,
+	0x44, 0x0c, 0xe9, 0x3c, 0x70, 0xfc, 0x2b, 0x21, 0x02, 0xc1, 0x86, 0xef, 0xcc, 0x09, 0x4f, 0x09,
+	0xfb, 0x8e, 0xf7, 0x3c, 0x3a, 0xa5, 0x2c, 0x1d, 0xdb, 0x23, 0xf6, 0x9d, 0x4a, 0x90, 0xe7, 0x53,
+	0x09, 0x17, 0xc9, 0x56, 0x4e, 0x82, 0x70, 0x14, 0x66, 0xfc, 0x12, 0xea, 0x67, 0x74, 0xea, 0xfa,
+	0xca, 0xad, 0x34, 0xc1, 0x20, 0x73, 0xc7, 0xf5, 0xb8, 0x80, 0x64, 0x81, 0x2c, 0xd8, 0x0a, 0x9c,
+	0x30, 0xfc, 0x4a, 0x17, 0x13, 0xae, 0x42, 0xae, 0xf1, 0x1b, 0x40, 0x59, 0x18, 0x2e, 0xa3, 0x09,
+	0x46, 0x44, 0x67, 0xc4, 0x17, 0x38, 0x6c, 0xb1, 0xd2, 0xcd, 0xf6, 0x01, 0x9d, 0x12, 0x8f, 0xac,
+	0x5a, 0x2d, 0xf8, 0x3e, 0x34, 0x14, 0x7f, 0x2e, 0x60, 0x17, 0x74, 0x3a, 0x63, 0xbe, 0x5b, 0x23,
+	0x9d, 0xce, 0xb0, 0x07, 0x28, 0x49, 0x98, 0x02, 0x5b, 0x96, 0x6e, 0x99, 0x02, 0x3d, 0x9b, 0x82,
+	0x47, 0x50, 0x17, 0x21, 0xbf, 0xf5, 0x1c, 0xd7, 0x7f, 0x47, 0xbe, 0x45, 0x66, 0x85, 0x79, 0x14,
+	0x0d, 0x71, 0x79, 0x2a, 0x6c, 0x6b, 0x94, 0xe7, 0x43, 0xb8, 0xfd, 0x8a, 0x44, 0x2b, 0x06, 0xff,
+	0x14, 0xf6, 0x52, 0xe7, 0x35, 0x48, 0xae, 0xc0, 0x60, 0xeb, 0x25, 0x5d, 0x28, 0x52, 0xa3, 0x97,
+	0xa5, 0xa6, 0x72, 0x53, 0x75, 0x6c, 0xa8, 0xd5, 0x81, 0xf6, 0xa0, 0x32, 0x18, 0x9e, 0x99, 0x06,
+	0xdb, 0x8e, 0x3f, 0xf1, 0x2f, 0x0d, 0xaa, 0xbc, 0x1d, 0xe2, 0x4b, 0x72, 0x27, 0x9c, 0x58, 0x77,
+	0x27, 0xff, 0x89, 0x33, 0xd3, 0x02, 0xc6, 0xd2, 0x16, 0x10, 0xea, 0x36, 0x53, 0x75, 0x03, 0xa8,
+	0x72, 0xaf, 0x95, 0xc4, 0x89, 0xd6, 0xac, 0xa4, 0xad, 0x79, 0xfc, 0x67, 0x13, 0x76, 0x79, 0x80,
+	0xe7, 0x64, 0x71, 0xe9, 0x5e, 0x10, 0x34, 0x86, 0x5a, 0xa6, 0x1c, 0xd0, 0xa1, 0xd0, 0x53, 0x28,
+	0x48, 0xcb, 0x2a, 0x33, 0x25, 0x17, 0x8b, 0xdb, 0x3f, 0x7e, 0xff, 0xfd, 0xa9, 0xb7, 0x70, 0xdd,
+	0xbe, 0x7c, 0x6c, 0xf3, 0x87, 0xc4, 0x66, 0xd7, 0x75, 0xa2, 0xf5, 0xd0, 0x47, 0xd8, 0x12, 0xa5,
+	0x80, 0x5a, 0x1c, 0x25, 0x57, 0x48, 0xd6, 0x41, 0x61, 0x9f, 0x43, 0xdf, 0x63, 0xd0, 0x77, 0xd0,
+	0x51, 0x01, 0xda, 0xbe, 0xe6, 0x05, 0xf1, 0x1d, 0xb9, 0x50, 0xcb, 0x74, 0x9a, 0x8c, 0xa2, 0xd8,
+	0xad, 0x32, 0x8a, 0x92, 0xc6, 0x14, 0x54, 0xbd, 0xa5, 0x54, 0x1e, 0xd4, 0x32, 0xcf, 0xbb, 0xa4,
+	0x2a, 0x8e, 0x11, 0x49, 0x55, 0x32, 0x0d, 0xf0, 0x03, 0x46, 0xd5, 0xb1, 0x96, 0x51, 0xc5, 0xa9,
+	0x23, 0x00, 0xe9, 0x13, 0x86, 0x4c, 0x8e, 0x58, 0x78, 0x1c, 0xad, 0xc3, 0x12, 0x0b, 0xa7, 0xc2,
+	0x8c, 0xaa, 0x8d, 0x0f, 0x8a, 0x54, 0x5e, 0xec, 0x1d, 0xd3, 0x8c, 0x61, 0x47, 0x19, 0x1b, 0xe8,
+	0x48, 0xb9, 0x6c, 0x75, 0x1c, 0x59, 0xed, 0x72, 0x23, 0xe7, 0x6b, 0x31, 0xbe, 0x3d, 0x5c, 0xcb,
+	0xf0, 0xc5, 0x1c, 0x3e, 0xec, 0x28, 0xe3, 0x5a, 0x72, 0x94, 0xfd, 0x49, 0x90, 0x1c, 0xa5, 0x13,
+	0x5e, 0xc4, 0x64, 0x29, 0x31, 0x5d, 0xcb, 0x3f, 0x11, 0x2c, 0x75, 0x9f, 0x44, 0x4c, 0xa2, 0x6b,
+	0xd4, 0x98, 0xd4, 0xe9, 0x96, 0x8b, 0x29, 0x37, 0xba, 0xf0, 0x5d, 0xc6, 0x67, 0xe2, 0x46, 0x96,
+	0x8f, 0xb7, 0xea, 0x89, 0xd6, 0x1b, 0x6f, 0xb2, 0xc3, 0x4f, 0xfe, 0x05, 0x00, 0x00, 0xff, 0xff,
+	0x50, 0x20, 0xdf, 0x37, 0x27, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -818,12 +1000,14 @@ type SponsorServiceClient interface {
 	CreateAdmin(ctx context.Context, in *CreateAdminRequest, opts ...grpc.CallOption) (*CreateAdminResponse, error)
 	GetAdmin(ctx context.Context, in *GetAdminRequest, opts ...grpc.CallOption) (*GetAdminResponse, error)
 	DeleteAdmin(ctx context.Context, in *DeleteAdminRequest, opts ...grpc.CallOption) (*DeleteAdminResponse, error)
+	UpdateAdmin(ctx context.Context, in *UpdateAdminRequest, opts ...grpc.CallOption) (*UpdateAdminResponse, error)
 	LoginAdmin(ctx context.Context, in *LoginAdminRequest, opts ...grpc.CallOption) (*LoginAdminResponse, error)
 	//
 	//================================================================
 	//SPONSOR RPC CALLS
 	//================================================================
 	CreateSponsor(ctx context.Context, in *CreateSponsorRequest, opts ...grpc.CallOption) (*CreateSponsorResponse, error)
+	UpdateSponsor(ctx context.Context, in *UpdateSponsorRequest, opts ...grpc.CallOption) (*UpdateSponsorResponse, error)
 	CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*CreateCompanyResponse, error)
 }
 
@@ -862,6 +1046,15 @@ func (c *sponsorServiceClient) DeleteAdmin(ctx context.Context, in *DeleteAdminR
 	return out, nil
 }
 
+func (c *sponsorServiceClient) UpdateAdmin(ctx context.Context, in *UpdateAdminRequest, opts ...grpc.CallOption) (*UpdateAdminResponse, error) {
+	out := new(UpdateAdminResponse)
+	err := c.cc.Invoke(ctx, "/proto.SponsorService/UpdateAdmin", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *sponsorServiceClient) LoginAdmin(ctx context.Context, in *LoginAdminRequest, opts ...grpc.CallOption) (*LoginAdminResponse, error) {
 	out := new(LoginAdminResponse)
 	err := c.cc.Invoke(ctx, "/proto.SponsorService/LoginAdmin", in, out, opts...)
@@ -874,6 +1067,15 @@ func (c *sponsorServiceClient) LoginAdmin(ctx context.Context, in *LoginAdminReq
 func (c *sponsorServiceClient) CreateSponsor(ctx context.Context, in *CreateSponsorRequest, opts ...grpc.CallOption) (*CreateSponsorResponse, error) {
 	out := new(CreateSponsorResponse)
 	err := c.cc.Invoke(ctx, "/proto.SponsorService/CreateSponsor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *sponsorServiceClient) UpdateSponsor(ctx context.Context, in *UpdateSponsorRequest, opts ...grpc.CallOption) (*UpdateSponsorResponse, error) {
+	out := new(UpdateSponsorResponse)
+	err := c.cc.Invoke(ctx, "/proto.SponsorService/UpdateSponsor", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -898,12 +1100,14 @@ type SponsorServiceServer interface {
 	CreateAdmin(context.Context, *CreateAdminRequest) (*CreateAdminResponse, error)
 	GetAdmin(context.Context, *GetAdminRequest) (*GetAdminResponse, error)
 	DeleteAdmin(context.Context, *DeleteAdminRequest) (*DeleteAdminResponse, error)
+	UpdateAdmin(context.Context, *UpdateAdminRequest) (*UpdateAdminResponse, error)
 	LoginAdmin(context.Context, *LoginAdminRequest) (*LoginAdminResponse, error)
 	//
 	//================================================================
 	//SPONSOR RPC CALLS
 	//================================================================
 	CreateSponsor(context.Context, *CreateSponsorRequest) (*CreateSponsorResponse, error)
+	UpdateSponsor(context.Context, *UpdateSponsorRequest) (*UpdateSponsorResponse, error)
 	CreateCompany(context.Context, *CreateCompanyRequest) (*CreateCompanyResponse, error)
 }
 
@@ -965,6 +1169,24 @@ func _SponsorService_DeleteAdmin_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SponsorService_UpdateAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAdminRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SponsorServiceServer).UpdateAdmin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.SponsorService/UpdateAdmin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SponsorServiceServer).UpdateAdmin(ctx, req.(*UpdateAdminRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _SponsorService_LoginAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginAdminRequest)
 	if err := dec(in); err != nil {
@@ -997,6 +1219,24 @@ func _SponsorService_CreateSponsor_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SponsorServiceServer).CreateSponsor(ctx, req.(*CreateSponsorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SponsorService_UpdateSponsor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSponsorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SponsorServiceServer).UpdateSponsor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.SponsorService/UpdateSponsor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SponsorServiceServer).UpdateSponsor(ctx, req.(*UpdateSponsorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1036,12 +1276,20 @@ var _SponsorService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _SponsorService_DeleteAdmin_Handler,
 		},
 		{
+			MethodName: "UpdateAdmin",
+			Handler:    _SponsorService_UpdateAdmin_Handler,
+		},
+		{
 			MethodName: "LoginAdmin",
 			Handler:    _SponsorService_LoginAdmin_Handler,
 		},
 		{
 			MethodName: "CreateSponsor",
 			Handler:    _SponsorService_CreateSponsor_Handler,
+		},
+		{
+			MethodName: "UpdateSponsor",
+			Handler:    _SponsorService_UpdateSponsor_Handler,
 		},
 		{
 			MethodName: "CreateCompany",

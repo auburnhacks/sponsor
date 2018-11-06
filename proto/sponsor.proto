@@ -26,6 +26,12 @@ service SponsorService {
             delete: "/v1/sponsor/admin/{adminID}"
         };     
     }
+    rpc UpdateAdmin(UpdateAdminRequest) returns(UpdateAdminResponse) {
+        option (google.api.http) = {
+            put: "/v1/sponsor/admin/{adminID}"
+            body: "*"
+        };
+    }
     rpc LoginAdmin(LoginAdminRequest) returns(LoginAdminResponse) {
         option (google.api.http) = {
             post: "/v1/sponsor/admin/login"
@@ -45,12 +51,35 @@ service SponsorService {
             body: "*"
         };
     }
+    rpc UpdateSponsor(UpdateSponsorRequest) returns(UpdateSponsorResponse) {
+        option (google.api.http) = {
+            put: "/v1/sponsor/{sponsorID}"
+            body: "*"
+        };
+    }
     rpc CreateCompany(CreateCompanyRequest) returns (CreateCompanyResponse) {
         option (google.api.http) = {
             post: "/v1/sponsor/company"
             body: "*"
         };
     }
+}
+
+message UpdateSponsorRequest {
+    string sponsorID = 1;
+    Sponsor sponsor = 2;
+}
+message UpdateSponsorResponse {
+    Sponsor sponsor = 1;
+}
+
+message UpdateAdminRequest {
+    string adminID = 1;
+    Admin admin = 2;
+}
+
+message UpdateAdminResponse {
+    Admin admin = 1;
 }
 
 message CreateSponsorRequest {

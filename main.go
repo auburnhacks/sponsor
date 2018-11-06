@@ -29,12 +29,12 @@ var (
 
 func init() {
 	/*
-									DEFAULT CONNECTION STRING (DEVELOPMENT)
+		DEFAULT CONNECTION STRING (DEVELOPMENT)
 		===================================================================================================
 		host=localhost port=5432 user=dev_user password=test123 dbname=auburnhacks_sponsors sslmode=disable
 		===================================================================================================
-				If you are using docker run the following command to start a lock postgres database running at
-				localhost:5432
+		* If you are using docker run the following command to start a lock postgres database running at
+		localhost:5432
 		docker run \--name pg-sponsor-local \
 		-p 5432:5432 \
 		-e POSTGRES_PASSWORD=test123 \

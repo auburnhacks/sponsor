@@ -18,7 +18,7 @@ type Sponsor struct {
 	Name      string    `db:"name"`
 	Email     string    `db:"email"`
 	Password  string    `db:"password"`
-	Company   *Company  `db:"company_id"`
+	CompanyID string    `db:"company_id"`
 	ACL       string    `db:"acl"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
@@ -27,11 +27,11 @@ type Sponsor struct {
 // New returns a instance of a Sponsor it uses the input parameters but
 // if no ACL list is provided then it defaults to the DefaultACL list in the
 // package definition
-func New(name, email, password string, company *Company, acl string) *Sponsor {
+func New(name, email, password, companyID string, acl string) *Sponsor {
 	s := &Sponsor{
-		Name:     name,
-		Password: password,
-		Company:  company,
+		Name:      name,
+		Password:  password,
+		CompanyID: companyID,
 	}
 	if acl == "" {
 		s.ACL = DefaultACL
@@ -43,7 +43,7 @@ func New(name, email, password string, company *Company, acl string) *Sponsor {
 
 // ByID is a function that gets an admin from the given ID
 func ByID(sponsorID string) (*Sponsor, error) {
-	query := `SELECT * FROM sponsors WHERE id=:id`
+	query := `SELECT * FROM sponsors WHERE id = :id LIMIT 1`
 	stmt, err := db.Conn.PrepareNamed(query)
 	if err != nil {
 		return nil, err
@@ -91,13 +91,34 @@ func (s *Sponsor) Register() error {
 		"name":     s.Name,
 		"email":    s.Email,
 		"password": s.Password,
-		"company":  s.Company.ID,
+		"company":  s.CompanyID,
 		"acl":      s.ACL,
 	}).Scan(&id)
 	if err != nil {
 		return err
 	}
 	s.ID = id
+	return nil
+}
+
+// Save is method on sponsor to save the state of a sponsor to the db
+func (s *Sponsor) Save() error {
+	query := `
+	UPDATE sponsors
+	SET name = :name, email = :email, password = :password, acl = :acl
+	WHERE id = :id
+	RETURNING id`
+	stmt, err := db.Conn.PrepareNamed(query)
+	if err != nil {
+		return err
+	}
+	_ = stmt.QueryRow(map[string]interface{}{
+		"id":       s.ID,
+		"name":     s.Name,
+		"email":    s.Email,
+		"password": s.Password,
+		"acl":      s.ACL,
+	})
 	return nil
 }
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/auburnhacks/sponsor/pkg/sponsor"
 	api "github.com/auburnhacks/sponsor/proto"
+	log "github.com/sirupsen/logrus"
 )
 
 // CreateSponsor is a method on the SponsorServer that is used to create a sponsor
@@ -16,7 +17,8 @@ func (ss *SponsorServer) CreateSponsor(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
-	s := sponsor.New(req.Sponsor.Name, req.Sponsor.Email, req.Sponsor.Password, c, req.Sponsor.ACL)
+	s := sponsor.New(req.Sponsor.Name, req.Sponsor.Email, req.Sponsor.Password,
+		req.Sponsor.Company.Id, req.Sponsor.ACL)
 	if err := s.Register(); err != nil {
 		return nil, err
 	}
@@ -26,11 +28,43 @@ func (ss *SponsorServer) CreateSponsor(ctx context.Context,
 			Name:  s.Name,
 			Email: s.Email,
 			Company: &api.Company{
-				Id:   s.Company.Name,
-				Name: s.Company.Name,
-				Logo: s.Company.Logo,
+				Id:   c.ID,
+				Name: c.Name,
+				Logo: c.Logo,
 			},
 			ACL: s.ACL,
+		},
+	}, nil
+}
+
+// UpdateSponsor is a method on the SponsorServer that is used to modify a
+// state of a sponsor in the database
+func (ss *SponsorServer) UpdateSponsor(ctx context.Context, req *api.UpdateSponsorRequest) (*api.UpdateSponsorResponse, error) {
+	s, err := sponsor.ByID(req.SponsorID)
+	if err != nil {
+		return nil, err
+	}
+	log.Debugf("%+v", s)
+	s.Name = req.Sponsor.Name
+	s.Email = req.Sponsor.Email
+	s.ACL = req.Sponsor.ACL
+	if err := s.Save(); err != nil {
+		return nil, err
+	}
+	c, err := sponsor.CompanyByID(s.CompanyID)
+	if err != nil {
+		return nil, err
+	}
+	return &api.UpdateSponsorResponse{
+		Sponsor: &api.Sponsor{
+			Id:    s.ID,
+			Name:  s.Name,
+			Email: s.Email,
+			Company: &api.Company{
+				Id:   c.ID,
+				Name: c.Name,
+				Logo: c.Logo,
+			},
 		},
 	}, nil
 }

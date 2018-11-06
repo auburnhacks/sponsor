@@ -10,7 +10,6 @@ import (
 	"github.com/auburnhacks/sponsor/pkg/utils"
 	api "github.com/auburnhacks/sponsor/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/mongodb/mongo-go-driver/mongo"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
@@ -22,7 +21,6 @@ const (
 // SponsorServer is a struct that implements the SponsorServiceServer interface
 // that is auto-gernerated by gRPC
 type SponsorServer struct {
-	DB     *mongo.Client
 	quit   chan struct{}
 	tWg    sync.WaitGroup
 	jwtKey []byte

@@ -15,16 +15,17 @@ import (
 	"google.golang.org/grpc"
 )
 
-var (
-	signingKey = []byte("supersecret")
+const (
+	tokenIssuer = "sponsor_auburnhacks"
 )
 
 // SponsorServer is a struct that implements the SponsorServiceServer interface
 // that is auto-gernerated by gRPC
 type SponsorServer struct {
-	DB   *mongo.Client
-	quit chan struct{}
-	tWg  sync.WaitGroup
+	DB     *mongo.Client
+	quit   chan struct{}
+	tWg    sync.WaitGroup
+	jwtKey []byte
 }
 
 // ListenAndServe is a helper func that invokes the and serves the gRPC server
@@ -41,19 +42,26 @@ func NewSponsorServer() *SponsorServer {
 	}
 }
 
-// Shutdown is a function that wait on the quit channel and signals the gateway
-// and gRPC server to shutdown
-func (s *SponsorServer) Shutdown() {
-	s.quit <- struct{}{}
-	s.tWg.Wait()
-	s.quit <- struct{}{}
-	s.tWg.Wait()
-	close(s.quit)
+// WithKey is a function that modifies the SponsorServer and return the
+// instance
+func (ss *SponsorServer) WithKey(key []byte) *SponsorServer {
+	ss.jwtKey = key
+	return ss
 }
 
-func (s *SponsorServer) serveGRPC(l net.Listener) {
+// Shutdown is a function that wait on the quit channel and signals the gateway
+// and gRPC server to shutdown
+func (ss *SponsorServer) Shutdown() {
+	ss.quit <- struct{}{}
+	ss.tWg.Wait()
+	ss.quit <- struct{}{}
+	ss.tWg.Wait()
+	close(ss.quit)
+}
+
+func (ss *SponsorServer) serveGRPC(l net.Listener) {
 	srv := grpc.NewServer(grpc.UnaryInterceptor(utils.UnaryAuthInterceptor))
-	api.RegisterSponsorServiceServer(srv, s)
+	api.RegisterSponsorServiceServer(srv, ss)
 
 	go func() {
 		log.Println("serving grpc")
@@ -61,14 +69,14 @@ func (s *SponsorServer) serveGRPC(l net.Listener) {
 			log.Fatalf("error serving: %v", err)
 		}
 	}()
-	<-s.quit
+	<-ss.quit
 	log.Infof("terminating rpc server")
-	s.tWg.Add(1)
+	ss.tWg.Add(1)
 	srv.GracefulStop()
-	s.tWg.Done()
+	ss.tWg.Done()
 }
 
-func (s *SponsorServer) serveGateway(listenAddr, serviceEndpoint *string) {
+func (ss *SponsorServer) serveGateway(listenAddr, serviceEndpoint *string) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -86,9 +94,9 @@ func (s *SponsorServer) serveGateway(listenAddr, serviceEndpoint *string) {
 		log.Info("serving gateway")
 		log.Fatal(srv.ListenAndServe())
 	}()
-	<-s.quit
+	<-ss.quit
 	log.Println("terminating gateway")
-	s.tWg.Add(1)
+	ss.tWg.Add(1)
 	srv.Shutdown(ctx)
-	s.tWg.Done()
+	ss.tWg.Done()
 }

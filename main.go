@@ -6,8 +6,10 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
+	"github.com/auburnhacks/sponsor/pkg/auth"
 	"github.com/auburnhacks/sponsor/pkg/db"
 	"github.com/auburnhacks/sponsor/pkg/server"
 	"github.com/jmoiron/sqlx"
@@ -89,8 +91,12 @@ func main() {
 	if err := db.MigrateDB(quit); err != nil {
 		log.Fatal(err)
 	}
-
-	srv := server.NewSponsorServer()
+	// Read the signing key for JWT tokens
+	key, err := auth.LoadJWTKey(filepath.Join(".", "jwt_key_dev"))
+	if err != nil {
+		log.Fatalf("error loading jwt key: %v", err)
+	}
+	srv := server.NewSponsorServer().WithKey(key)
 
 	// gRPC server listener
 	l, err := net.Listen("tcp", *sponsorService)

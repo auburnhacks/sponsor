@@ -3,9 +3,17 @@
 package auth
 
 import (
+	"errors"
 	"io/ioutil"
+	"strings"
 
 	"github.com/dgrijalva/jwt-go"
+)
+
+var (
+	// ErrUnauthorized is an error that is used when a user is requesting an
+	// unauthorized claim in the system
+	ErrUnauthorized = errors.New("auth: user unauthoized to perform this action")
 )
 
 // LoadJWTKey loads a JWT key from a given file path
@@ -15,6 +23,19 @@ func LoadJWTKey(filename string) ([]byte, error) {
 		return nil, err
 	}
 	return bb, nil
+}
+
+// HasAccessToResource is a function that determines whether an
+// ACL has access to the requesting claim
+// NOTE: ACL is has to be a comma separated string
+func HasAccessToResource(ACL string, claim string) error {
+	acls := strings.Split(ACL, ",")
+	for _, acl := range acls {
+		if claim == acl {
+			return nil
+		}
+	}
+	return ErrUnauthorized
 }
 
 // AdminClaims is a struct that represents the structure
@@ -34,8 +55,3 @@ func NewAdminClaims(adminID, issuer, acl string, issuedAt int64, expiresAt int64
 	ac.ExpiresAt = expiresAt
 	return ac
 }
-
-// Valid is a function that is required by the jwt.Claims interface
-// func (ac *AdminClaims) Valid() error {
-// 	return nil
-// }

@@ -33,7 +33,6 @@ func UnaryAuthInterceptor(ctx context.Context,
 			return nil, err
 		}
 	}
-
 	h, err := handler(ctx, req)
 	if err != nil {
 		log.Infof("request - Method:%s\tDuration:%s\tError:%v",

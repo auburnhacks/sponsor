@@ -8,6 +8,8 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/auburnhacks/sponsor/pkg/auth"
+	"github.com/dgrijalva/jwt-go"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -30,7 +32,16 @@ func authenticate(ctx context.Context) error {
 	return authenticateJWTToken(bearerToken[1])
 }
 
-func authenticateJWTToken(token string) error {
-	// TODO: add all the JWT authentication stuff here
+func authenticateJWTToken(tokenString string) error {
+	token, err := jwt.ParseWithClaims(tokenString, &auth.AdminClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(""), nil
+	})
+	if err != nil {
+		return err
+	}
+	_, ok := token.Claims.(*auth.AdminClaims)
+	if !ok || !token.Valid {
+		return ErrNotAuthenicated
+	}
 	return nil
 }

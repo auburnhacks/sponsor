@@ -57,17 +57,32 @@ func NewWithACL(name, email, password string, acl string) *Admin {
 
 // Save saves the instance of an admin to the database
 func (a *Admin) Save() error {
-	query := `INSERT INTO admins(name, email, password, acl) VALUES($1, $2, $3, $4)`
-	_, err := db.Conn.Exec(query, a.Name, a.Email, a.Password, a.ACL)
+	q := `
+	UPDATE admins 
+	SET name = :name, email = :email, password = :password, acl = :acl
+	WHERE id = :id
+	RETURNING id`
+	stmt, err := db.Conn.PrepareNamed(q)
 	if err != nil {
-		return errors.Wrap(err, "cloud not save user to the database")
+		return err
 	}
+	_ = stmt.QueryRow(map[string]interface{}{
+		"id":       a.ID,
+		"name":     a.Name,
+		"email":    a.Email,
+		"password": a.Password,
+		"acl":      a.ACL,
+	})
 	return nil
 }
 
 // Register is only called once when the admin first signs up
 func (a *Admin) Register() error {
-	query := `INSERT INTO admins(name, email, password, acl) VALUES(:name, :email, :password, :acl) RETURNING id`
+	query := `
+	INSERT INTO admins
+	(name, email, password, acl)
+	VALUES(:name, :email, :password, :acl)
+	RETURNING id`
 	stmt, err := db.Conn.PrepareNamed(query)
 	if err != nil {
 		return err

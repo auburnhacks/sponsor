@@ -7,6 +7,7 @@ import (
 	"github.com/auburnhacks/sponsor/pkg/admin"
 	api "github.com/auburnhacks/sponsor/proto"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -69,6 +70,31 @@ func (s *SponsorServer) LoginAdmin(ctx context.Context, req *api.LoginAdminReque
 	}
 	return &api.LoginAdminResponse{
 		Token: tokenStr,
+		Admin: &api.Admin{
+			AdminID: admin.ID,
+			Name:    admin.Name,
+			Email:   admin.Email,
+			ACL:     admin.ACL,
+		},
+	}, nil
+}
+
+// UpdateAdmin is a method on the SponsorServer that updates the modified state
+// of an admin to the database
+func (s *SponsorServer) UpdateAdmin(ctx context.Context, req *api.UpdateAdminRequest) (*api.UpdateAdminResponse, error) {
+	log.Debugf("%+v", req)
+	admin, err := admin.ByID(req.AdminID)
+	if err != nil {
+		return nil, err
+	}
+	// Update all the fields
+	admin.Name = req.Admin.Name
+	admin.Email = req.Admin.Email
+	admin.ACL = req.Admin.ACL
+	if err := admin.Save(); err != nil {
+		return nil, errors.Wrap(err, "error while saving admin to db")
+	}
+	return &api.UpdateAdminResponse{
 		Admin: &api.Admin{
 			AdminID: admin.ID,
 			Name:    admin.Name,

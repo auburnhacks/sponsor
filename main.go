@@ -8,9 +8,11 @@ import (
 	"os/signal"
 	"path/filepath"
 	"syscall"
+	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/auth"
 	"github.com/auburnhacks/sponsor/pkg/db"
+	"github.com/auburnhacks/sponsor/pkg/participant"
 	"github.com/auburnhacks/sponsor/pkg/server"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -27,6 +29,7 @@ var (
 	dbName         *string
 	dbSSLMode      *bool
 	debug          *bool
+	quillMongoURI  *string
 )
 
 func init() {
@@ -60,6 +63,7 @@ func init() {
 
 	// application related flags
 	debug = flag.Bool("debug", false, "use this flag to set debug logging [DONT USE IN PRODUCTION]")
+	quillMongoURI = flag.String("quill_db_uri", "mongodb://localhost:27017/quill", "database URI for quill")
 
 	flag.Parse()
 }
@@ -108,7 +112,14 @@ func main() {
 		server.ListenAndServe(srv, l, listenAddr, sponsorService)
 	}()
 	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM)
+	pollerQuit := make(chan struct{})
+	// Start syncing the participants from the external database
+	err = participant.SyncFromExternalDB(*quillMongoURI, 1*time.Second, pollerQuit)
+	if err != nil {
+		log.Errorf("error while syncing from external db: %v", err)
+	}
 	signal := <-quit
+	pollerQuit <- struct{}{}
 	log.Infof("received %v signal, terminating server", signal)
 	db.Conn.Close()
 	srv.Shutdown()

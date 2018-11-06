@@ -63,6 +63,23 @@ service SponsorService {
             body: "*"
         };
     }
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //                      COMMON RPC CALLS
+    //  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    rpc ListParticipants(ListParticipantsRequest) returns(ListParticipantsResponse) {
+        option (google.api.http) = {
+            get: "/v1/sponsor/participants"
+        };
+    }
+}
+
+message ListParticipantsRequest {
+    int32 limit = 1;
+}
+message ListParticipantsResponse {
+    repeated Participant participants = 1;
 }
 
 message UpdateSponsorRequest {
@@ -154,3 +171,5 @@ message Company {
 	string name = 2;
 	string logo = 3;
 }
+
+message Participant {}

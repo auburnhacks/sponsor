@@ -20,16 +20,18 @@ import (
 )
 
 var (
-	sponsorService *string
-	listenAddr     *string
-	dbHost         *string
-	dbPort         *int
-	dbUser         *string
-	dbPassword     *string
-	dbName         *string
-	dbSSLMode      *bool
-	debug          *bool
-	quillMongoURI  *string
+	sponsorService  *string
+	listenAddr      *string
+	dbHost          *string
+	dbPort          *int
+	dbUser          *string
+	dbPassword      *string
+	dbName          *string
+	dbSSLMode       *bool
+	debug           *bool
+	quillMongoURI   *string
+	resumesMongoURI *string
+	syncDuration    *time.Duration
 )
 
 func init() {
@@ -64,6 +66,8 @@ func init() {
 	// application related flags
 	debug = flag.Bool("debug", false, "use this flag to set debug logging [DONT USE IN PRODUCTION]")
 	quillMongoURI = flag.String("quill_db_uri", "mongodb://localhost:27017/quill", "database URI for quill")
+	resumesMongoURI = flag.String("resumes_db_uri", "mongodb://localhost:27017/resumes", "database uri for resumes")
+	syncDuration = flag.Duration("sync_duration", 5*time.Second, "sleep duration every sync period")
 
 	flag.Parse()
 }
@@ -111,12 +115,16 @@ func main() {
 		log.Infof("server running on pid: %d", os.Getpid())
 		server.ListenAndServe(srv, l, listenAddr, sponsorService)
 	}()
-	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM)
+	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM, os.Interrupt)
 	pollerQuit := make(chan struct{})
 	// Start syncing the participants from the external database
-	err = participant.SyncFromExternalDB(*quillMongoURI, 1*time.Second, pollerQuit)
+	err = participant.Sync(*quillMongoURI, *resumesMongoURI, *syncDuration, pollerQuit)
 	if err != nil {
 		log.Errorf("error while syncing from external db: %v", err)
+		// close the poller if there is an error
+		pollerQuit <- struct{}{}
+		close(pollerQuit)
+		os.Exit(1)
 	}
 	signal := <-quit
 	pollerQuit <- struct{}{}

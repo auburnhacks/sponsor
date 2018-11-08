@@ -30,6 +30,7 @@ type Sponsor struct {
 func New(name, email, password, companyID string, acl string) *Sponsor {
 	s := &Sponsor{
 		Name:      name,
+		Email:     email,
 		Password:  password,
 		CompanyID: companyID,
 	}
@@ -81,7 +82,9 @@ func ByEmail(sponsorEmail string) (*Sponsor, error) {
 // NOTE: use this only when New Sponsors have to be created
 // Use the Save method on the Sponsor type for all other subsequent calls
 func (s *Sponsor) Register() error {
-	query := `INSERT INTO sponsors(name, email, password, company_id, acl) VALUES(:name, :email, :password, :company, :acl) RETURNING id`
+	query := `
+	INSERT INTO sponsors(name, email, password, company_id, acl)
+	VALUES(:name, :email, :password, :company, :acl) RETURNING id`
 	stmt, err := db.Conn.PrepareNamed(query)
 	if err != nil {
 		return err

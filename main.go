@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"net"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -20,8 +19,6 @@ import (
 )
 
 var (
-	sponsorService  *string
-	listenAddr      *string
 	dbHost          *string
 	dbPort          *int
 	dbUser          *string
@@ -59,15 +56,14 @@ func init() {
 	dbName = flag.String("db_name", "auburnhacks_sponsors", "database name that has to be accessed after connecting.")
 	dbSSLMode = flag.Bool("db_ssl_mode", false, "use this flag to connecto to the database using ssl")
 
-	// gRPC and gateway configuration flags
-	sponsorService = flag.String("sponsor_endpoint", "localhost:10000", "hostport for sponsor service")
-	listenAddr = flag.String("listen_addr", "localhost:8080", "listen_addr for grpc gateway")
-
 	// application related flags
 	debug = flag.Bool("debug", false, "use this flag to set debug logging [DONT USE IN PRODUCTION]")
 	quillMongoURI = flag.String("quill_db_uri", "mongodb://localhost:27017/quill", "database URI for quill")
 	resumesMongoURI = flag.String("resumes_db_uri", "mongodb://localhost:27017/resumes", "database uri for resumes")
 	syncDuration = flag.Duration("sync_duration", 5*time.Second, "sleep duration every sync period")
+
+	server.GatewayAddr = flag.String("gateway_addr", "localhost:8080", "grpc gateway listen addr")
+	server.RPCAddr = flag.String("rpc_addr", "localhost:10000", "grpc server listening addr")
 
 	flag.Parse()
 }
@@ -95,7 +91,7 @@ func main() {
 	quit := make(chan os.Signal)
 
 	// Run all database migrations
-	log.Info("running database migrations...")
+	log.Info("running database migrations")
 	if err := db.MigrateDB(quit); err != nil {
 		log.Fatal(err)
 	}
@@ -104,16 +100,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("error loading jwt key: %v", err)
 	}
-	srv := server.NewSponsorServer().WithKey(key)
-
-	// gRPC server listener
-	l, err := net.Listen("tcp", *sponsorService)
-	if err != nil {
-		log.Fatalf("error create listener: %v", err)
-	}
+	s := server.New(key)
 	go func() {
-		log.Infof("server running on pid: %d", os.Getpid())
-		server.ListenAndServe(srv, l, listenAddr, sponsorService)
+		if err := s.Serve(); err != nil {
+			log.Fatalf("error while serving: %v", err)
+		}
 	}()
 	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM, os.Interrupt)
 	pollerQuit := make(chan struct{})
@@ -121,7 +112,6 @@ func main() {
 	err = participant.Sync(*quillMongoURI, *resumesMongoURI, *syncDuration, pollerQuit)
 	if err != nil {
 		log.Errorf("error while syncing from external db: %v", err)
-		// close the poller if there is an error
 		pollerQuit <- struct{}{}
 		close(pollerQuit)
 		os.Exit(1)
@@ -130,6 +120,8 @@ func main() {
 	pollerQuit <- struct{}{}
 	log.Infof("received %v signal, terminating server", signal)
 	db.Conn.Close()
-	srv.Shutdown()
+	if err := s.Stop(); err != nil {
+		log.Infof("error stopping server: %v", err)
+	}
 	os.Exit(0)
 }

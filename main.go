@@ -92,8 +92,8 @@ func main() {
 
 	// Run all database migrations
 	log.Info("running database migrations")
-	if err := db.MigrateDB(quit); err != nil {
-		log.Fatal(err)
+	if err := db.Migrate(quit); err != nil {
+		log.Fatalf("error migrating database: %v", err)
 	}
 	// Read the signing key for JWT tokens
 	key, err := auth.LoadJWTKey(filepath.Join(".", "jwt_key_dev"))
@@ -102,23 +102,29 @@ func main() {
 	}
 	s := server.New(key)
 	go func() {
+		log.Infof("starting server pid: %d", os.Getpid())
 		if err := s.Serve(); err != nil {
 			log.Fatalf("error while serving: %v", err)
 		}
 	}()
-	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM, os.Interrupt)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	pollerQuit := make(chan struct{})
 	// Start syncing the participants from the external database
 	err = participant.Sync(*quillMongoURI, *resumesMongoURI, *syncDuration, pollerQuit)
 	if err != nil {
 		log.Errorf("error while syncing from external db: %v", err)
 		pollerQuit <- struct{}{}
-		close(pollerQuit)
 		os.Exit(1)
 	}
 	signal := <-quit
 	pollerQuit <- struct{}{}
 	log.Infof("received %v signal, terminating server", signal)
+	// Dropping migrations
+	if *debug {
+		if err := db.Drop(); err != nil {
+			log.Fatalf("error dropping database: %v", err)
+		}
+	}
 	db.Conn.Close()
 	if err := s.Stop(); err != nil {
 		log.Infof("error stopping server: %v", err)

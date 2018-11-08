@@ -11,11 +11,16 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var (
+	migrator *migrate.Migrate
+)
+
 const migrationSourceFiles = "file://migrations"
 
-// MigrateDB is a function that always runs the first time when the application
+// Migrate is a function that always runs the first time when the application
 // starts to sync all database fields and run migrations
-func MigrateDB(quit chan os.Signal) error {
+func Migrate(quit chan os.Signal) error {
+	var err error
 	log.Debug("starting to perform migrations")
 	if Conn == nil {
 		return errors.New("sql.DB instance not initialized to db.Conn cannot migrate database")
@@ -26,19 +31,20 @@ func MigrateDB(quit chan os.Signal) error {
 		return errors.Wrap(err, "could not create driver with instance")
 	}
 	log.Debugf("migrating database to with driver: %v", driver)
-	m, err := migrate.NewWithDatabaseInstance(migrationSourceFiles, "postgres", driver)
+	migrator, err = migrate.NewWithDatabaseInstance(migrationSourceFiles, "postgres", driver)
 	if err != nil {
 		return errors.Wrap(err, "could not migrate")
 	}
 	log.Debug("finished performing migrations")
-	m.Steps(2)
-	go func() {
-		log.Debug("watching for quit message to drop db tables")
-		signal := <-quit
-		log.Debugf("signal %v received, dropping all tables", signal)
-		if err := m.Drop(); err != nil {
-			log.Fatalf("error dropping migrations: %v", err)
-		}
-	}()
+	migrator.Steps(2)
+	return nil
+}
+
+// Drop is a function that drop all the tables and their data
+func Drop() error {
+	log.Debug("dropping tables...")
+	if err := migrator.Drop(); err != nil {
+		return err
+	}
 	return nil
 }

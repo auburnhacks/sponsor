@@ -96,7 +96,7 @@ func (s *rpcServer) serveGateway(listenAddr, serviceEndpoint string) {
 		Addr:    listenAddr,
 		Handler: mux,
 	}
-	if err := s.gwSrv.ListenAndServe(); err != nil {
+	if err := s.gwSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Errorf("error while serving gateway: %v", err)
 		s.srvErr <- err
 	}

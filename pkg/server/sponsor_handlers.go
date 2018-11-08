@@ -2,11 +2,50 @@ package server
 
 import (
 	"context"
+	"time"
 
+	"github.com/auburnhacks/sponsor/pkg/auth"
 	"github.com/auburnhacks/sponsor/pkg/sponsor"
 	api "github.com/auburnhacks/sponsor/proto"
+	jwt "github.com/dgrijalva/jwt-go"
 	log "github.com/sirupsen/logrus"
 )
+
+// LoginSponsor is a method on the rpcServer that is used to validate and
+// login a sponsor and issue a JWT token
+func (ss *rpcServer) LoginSponsor(ctx context.Context,
+	req *api.LoginSponsorRequest) (*api.LoginSponsorResponse, error) {
+	sp, err := sponsor.Login(req.Email, req.PasswordPlainText)
+	if err != nil {
+		return nil, err
+	}
+	c, err := sponsor.CompanyByID(sp.CompanyID)
+	if err != nil {
+		return nil, err
+	}
+	issuedAt := time.Now().Unix()
+	expiresAt := time.Now().AddDate(0, 0, 30).Unix()
+	cl := auth.NewAdminClaims(sp.ID, tokenIssuer, sp.ACL, issuedAt, expiresAt)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cl)
+	tokenStr, err := token.SignedString(ss.privKey)
+	if err != nil {
+		return nil, err
+	}
+	return &api.LoginSponsorResponse{
+		Token: tokenStr,
+		Sponsor: &api.Sponsor{
+			Id:    sp.ID,
+			Name:  sp.Name,
+			Email: sp.Email,
+			ACL:   sp.ACL,
+			Company: &api.Company{
+				Id:   c.ID,
+				Name: c.Name,
+				Logo: c.Logo,
+			},
+		},
+	}, nil
+}
 
 // CreateSponsor is a method on the rpcServer that is used to create a sponsor
 // this is typically called by an admin

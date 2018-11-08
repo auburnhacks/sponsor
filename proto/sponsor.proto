@@ -63,6 +63,12 @@ service SponsorService {
             body: "*"
         };
     }
+    rpc LoginSponsor(LoginSponsorRequest) returns (LoginSponsorResponse) {
+        option (google.api.http) = {
+            post: "/v1/sponsor/login"
+            body: "*"
+        };
+    }
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //                      COMMON RPC CALLS
@@ -73,6 +79,15 @@ service SponsorService {
             get: "/v1/sponsor/participants"
         };
     }
+}
+
+message LoginSponsorRequest {
+    string email = 1;
+    string password_plain_text = 2;
+}
+message LoginSponsorResponse {
+    string token = 1;
+    Sponsor sponsor = 2;
 }
 
 message ListParticipantsRequest {

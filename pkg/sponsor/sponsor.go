@@ -3,14 +3,20 @@
 package sponsor
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/db"
+	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // DefaultACL is a variables that is used for all admins if no ACL list is
 // provided during signup
 var DefaultACL = "read"
+
+// ErrInvalidAuth is an error returned when there are invalid credentials
+var ErrInvalidAuth = errors.New("pkg/sponsor: invalid auth credentials")
 
 // Sponsor is a struc that repesents a sponsor in the system and the database
 type Sponsor struct {
@@ -82,6 +88,13 @@ func ByEmail(sponsorEmail string) (*Sponsor, error) {
 // NOTE: use this only when New Sponsors have to be created
 // Use the Save method on the Sponsor type for all other subsequent calls
 func (s *Sponsor) Register() error {
+	// hash password before storing it
+	pwdHash, err := bcrypt.GenerateFromPassword([]byte(s.Password),
+		bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	s.Password = fmt.Sprintf("%s", pwdHash)
 	query := `
 	INSERT INTO sponsors(name, email, password, company_id, acl)
 	VALUES(:name, :email, :password, :company, :acl) RETURNING id`
@@ -102,6 +115,20 @@ func (s *Sponsor) Register() error {
 	}
 	s.ID = id
 	return nil
+}
+
+// Login is a function that takes an email and plain text password
+// and returns a Sponsor if the credentials are valid
+func Login(email, password string) (*Sponsor, error) {
+	sp, err := ByEmail(email)
+	if err != nil {
+		return nil, ErrInvalidAuth
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(sp.Password), []byte(password))
+	if err != nil {
+		return nil, ErrInvalidAuth
+	}
+	return sp, nil
 }
 
 // Save is method on sponsor to save the state of a sponsor to the db

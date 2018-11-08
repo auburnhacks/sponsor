@@ -7,7 +7,9 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/bson/bsoncodec"
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -31,6 +33,7 @@ type Participant interface {
 }
 
 type hacker struct {
+	ID      objectid.ObjectID `json:"id" bson:"_id"`
 	Profile struct {
 		Name string `json:"name"`
 	} `json:"profile"`
@@ -38,7 +41,7 @@ type hacker struct {
 		Github   string `json:"github"`
 		Linkedin string `json:"twitter"`
 	} `json:"confirmation"`
-	Resume string
+	Resume string `json:"url"`
 }
 
 func (p *hacker) Info() string {
@@ -73,14 +76,15 @@ func Sync(quillURI, resumesURI string, d time.Duration, quit <-chan struct{}) er
 	}
 	go func() {
 		for {
-			pSlice, err := fetchParticipantsFromMongo(quillURI, resumesURI)
+			pSlice, err := fetchParticipants(quillURI, resumesURI)
 			if err != nil {
 				log.Errorf("error while fetching participants: %v", err)
-				return
+				continue
 			}
-			if err := saveToDB(pSlice); err != nil {
-				log.Errorf("erro while saving to database: %v", err)
-				return
+			pSlice, err = fetchResumes(pSlice, resumesURI)
+			if err != nil {
+				log.Errorf("error while fetching resumes: %v", err)
+				continue
 			}
 			select {
 			case <-time.Tick(d):
@@ -93,7 +97,7 @@ func Sync(quillURI, resumesURI string, d time.Duration, quit <-chan struct{}) er
 	return nil
 }
 
-func fetchParticipantsFromMongo(quillURI, resumesURI string) ([]Participant, error) {
+func fetchParticipants(quillURI, resumesURI string) ([]*hacker, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	log.Debug("creating mongo client")
@@ -114,7 +118,7 @@ func fetchParticipantsFromMongo(quillURI, resumesURI string) ([]Participant, err
 	}
 	defer cur.Close(ctx)
 
-	pSlice := []Participant{}
+	pSlice := []*hacker{}
 	for cur.Next(ctx) {
 		br, err := cur.DecodeBytes()
 		if err != nil {
@@ -126,8 +130,37 @@ func fetchParticipantsFromMongo(quillURI, resumesURI string) ([]Participant, err
 		}
 		pSlice = append(pSlice, h)
 	}
-	// at this point we have all the information from quill
-	// query the resumes database for other information
+	return pSlice, nil
+}
+
+func fetchResumes(pSlice []*hacker, resumesDBURI string) ([]*hacker, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	client, err := mongo.NewClient(resumesDBURI)
+	if err != nil {
+		return nil, err
+	}
+	log.Debug("connecting to resumes mongodb")
+	if err := client.Connect(ctx); err != nil {
+		return nil, err
+	}
+	resumes := client.Database("resumes").Collection("resumes_19")
+	for _, p := range pSlice {
+		if len(p.Profile.Name) == 0 {
+			continue
+		}
+		err = resumes.FindOne(ctx,
+			bson.NewDocument(
+				bson.EC.String("userid", p.ID.Hex()),
+			),
+		).Decode(&p)
+		if err != nil {
+			if err == mongo.ErrNoDocuments {
+				continue
+			}
+			return nil, err
+		}
+	}
 	return pSlice, nil
 }
 
@@ -135,9 +168,6 @@ func saveToDB(pSlice []Participant) error {
 	log.Debug("saving participants to database")
 	// delete all rows before inserting new ones
 	// NOTE: DELETE FROM participants RETURNING *
-	for _, p := range pSlice {
-		log.Debugf("%s", p.Info())
-	}
 	return nil
 }
 

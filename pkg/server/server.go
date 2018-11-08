@@ -84,8 +84,10 @@ func (s *rpcServer) serveGateway(listenAddr, serviceEndpoint string) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard,
-		&runtime.JSONPb{OrigName: false}))
+	mux := runtime.NewServeMux(
+		runtime.WithMarshalerOption(runtime.MIMEWildcard,
+			&runtime.JSONPb{OrigName: false}),
+	)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	if err := api.RegisterSponsorServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opts); err != nil {
 		log.Fatal(err)

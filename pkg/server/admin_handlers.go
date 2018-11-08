@@ -27,26 +27,26 @@ func (s *rpcServer) CreateAdmin(ctx context.Context, req *api.CreateAdminRequest
 	log.Debugf("%+v", a)
 	return &api.CreateAdminResponse{
 		Admin: &api.Admin{
-			Name:    a.Name,
-			Email:   a.Email,
-			AdminID: a.ID,
-			ACL:     a.ACL,
+			Id:    a.ID,
+			Name:  a.Name,
+			Email: a.Email,
+			ACL:   a.ACL,
 		},
 	}, nil
 }
 
 // GetAdmin is a method on the rpcServer that is used to get information of an admin
 func (s *rpcServer) GetAdmin(ctx context.Context, req *api.GetAdminRequest) (*api.GetAdminResponse, error) {
-	admin, err := admin.ByID(req.AdminID)
+	admin, err := admin.ByID(req.AdminId)
 	if err != nil {
 		return nil, err
 	}
 	return &api.GetAdminResponse{
 		Admin: &api.Admin{
-			AdminID: admin.ID,
-			Name:    admin.Name,
-			Email:   admin.Email,
-			ACL:     admin.ACL,
+			Id:    admin.ID,
+			Name:  admin.Name,
+			Email: admin.Email,
+			ACL:   admin.ACL,
 		},
 	}, nil
 }
@@ -75,10 +75,10 @@ func (s *rpcServer) LoginAdmin(ctx context.Context, req *api.LoginAdminRequest) 
 	return &api.LoginAdminResponse{
 		Token: tokenStr,
 		Admin: &api.Admin{
-			AdminID: admin.ID,
-			Name:    admin.Name,
-			Email:   admin.Email,
-			ACL:     admin.ACL,
+			Id:    admin.ID,
+			Name:  admin.Name,
+			Email: admin.Email,
+			ACL:   admin.ACL,
 		},
 	}, nil
 }
@@ -87,7 +87,7 @@ func (s *rpcServer) LoginAdmin(ctx context.Context, req *api.LoginAdminRequest) 
 // of an admin to the database
 func (s *rpcServer) UpdateAdmin(ctx context.Context, req *api.UpdateAdminRequest) (*api.UpdateAdminResponse, error) {
 	log.Debugf("%+v", req)
-	admin, err := admin.ByID(req.AdminID)
+	admin, err := admin.ByID(req.AdminId)
 	if err != nil {
 		return nil, err
 	}
@@ -100,10 +100,10 @@ func (s *rpcServer) UpdateAdmin(ctx context.Context, req *api.UpdateAdminRequest
 	}
 	return &api.UpdateAdminResponse{
 		Admin: &api.Admin{
-			AdminID: admin.ID,
-			Name:    admin.Name,
-			Email:   admin.Email,
-			ACL:     admin.ACL,
+			Id:    admin.ID,
+			Name:  admin.Name,
+			Email: admin.Email,
+			ACL:   admin.ACL,
 		},
 	}, nil
 }

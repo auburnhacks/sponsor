@@ -18,17 +18,17 @@ service SponsorService {
     }
     rpc GetAdmin(GetAdminRequest) returns(GetAdminResponse) {
         option (google.api.http) = {
-            get: "/v1/sponsor/admin/{adminID}"
+            get: "/v1/sponsor/admin/{admin_id}"
         };
     }
     rpc DeleteAdmin(DeleteAdminRequest) returns(DeleteAdminResponse) {
         option (google.api.http) = {
-            delete: "/v1/sponsor/admin/{adminID}"
+            delete: "/v1/sponsor/admin/{admin_id}"
         };     
     }
     rpc UpdateAdmin(UpdateAdminRequest) returns(UpdateAdminResponse) {
         option (google.api.http) = {
-            put: "/v1/sponsor/admin/{adminID}"
+            put: "/v1/sponsor/admin/{admin_id}"
             body: "*"
         };
     }
@@ -53,7 +53,7 @@ service SponsorService {
     }
     rpc UpdateSponsor(UpdateSponsorRequest) returns(UpdateSponsorResponse) {
         option (google.api.http) = {
-            put: "/v1/sponsor/{sponsorID}"
+            put: "/v1/sponsor/{sponsor_id}"
             body: "*"
         };
     }
@@ -83,7 +83,7 @@ message ListParticipantsResponse {
 }
 
 message UpdateSponsorRequest {
-    string sponsorID = 1;
+    string sponsor_id = 1;
     Sponsor sponsor = 2;
 }
 message UpdateSponsorResponse {
@@ -91,7 +91,7 @@ message UpdateSponsorResponse {
 }
 
 message UpdateAdminRequest {
-    string adminID = 1;
+    string admin_id = 1;
     Admin admin = 2;
 }
 
@@ -126,7 +126,7 @@ message LoginAdminResponse {
 }
 
 message DeleteAdminRequest {
-    string adminID = 1;
+    string admin_id = 1;
 }
 
 message DeleteAdminResponse {
@@ -136,21 +136,21 @@ message DeleteAdminResponse {
 message CreateAdminRequest {
     string name = 1;
     string email = 2;
-    string passwordPlainText = 3;
+    string password_plain_text = 3;
 }
 message CreateAdminResponse {
     Admin admin = 1;
 }
 
 message GetAdminRequest {
-    string adminID = 1;
+    string admin_id = 1;
 }
 message GetAdminResponse {
     Admin admin = 1;
 }
 
 message Admin {
-    string adminID = 1;
+    string id = 1;
     string name = 2;
     string email = 3;
     string password = 4;

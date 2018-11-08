@@ -40,7 +40,7 @@ func (ss *rpcServer) CreateSponsor(ctx context.Context,
 // UpdateSponsor is a method on the rpcServer that is used to modify a
 // state of a sponsor in the database
 func (ss *rpcServer) UpdateSponsor(ctx context.Context, req *api.UpdateSponsorRequest) (*api.UpdateSponsorResponse, error) {
-	s, err := sponsor.ByID(req.SponsorID)
+	s, err := sponsor.ByID(req.SponsorId)
 	if err != nil {
 		return nil, err
 	}

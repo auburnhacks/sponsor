@@ -52,15 +52,15 @@ func request_SponsorService_GetAdmin_0(ctx context.Context, marshaler runtime.Ma
 		_   = err
 	)
 
-	val, ok = pathParams["adminID"]
+	val, ok = pathParams["admin_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "adminID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "admin_id")
 	}
 
-	protoReq.AdminID, err = runtime.String(val)
+	protoReq.AdminId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "adminID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "admin_id", err)
 	}
 
 	msg, err := client.GetAdmin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -79,15 +79,15 @@ func request_SponsorService_DeleteAdmin_0(ctx context.Context, marshaler runtime
 		_   = err
 	)
 
-	val, ok = pathParams["adminID"]
+	val, ok = pathParams["admin_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "adminID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "admin_id")
 	}
 
-	protoReq.AdminID, err = runtime.String(val)
+	protoReq.AdminId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "adminID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "admin_id", err)
 	}
 
 	msg, err := client.DeleteAdmin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -110,15 +110,15 @@ func request_SponsorService_UpdateAdmin_0(ctx context.Context, marshaler runtime
 		_   = err
 	)
 
-	val, ok = pathParams["adminID"]
+	val, ok = pathParams["admin_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "adminID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "admin_id")
 	}
 
-	protoReq.AdminID, err = runtime.String(val)
+	protoReq.AdminId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "adminID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "admin_id", err)
 	}
 
 	msg, err := client.UpdateAdmin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -167,15 +167,15 @@ func request_SponsorService_UpdateSponsor_0(ctx context.Context, marshaler runti
 		_   = err
 	)
 
-	val, ok = pathParams["sponsorID"]
+	val, ok = pathParams["sponsor_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sponsorID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sponsor_id")
 	}
 
-	protoReq.SponsorID, err = runtime.String(val)
+	protoReq.SponsorId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sponsorID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sponsor_id", err)
 	}
 
 	msg, err := client.UpdateSponsor(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -518,17 +518,17 @@ func RegisterSponsorServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 var (
 	pattern_SponsorService_CreateAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "sponsor", "admin"}, ""))
 
-	pattern_SponsorService_GetAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "sponsor", "admin", "adminID"}, ""))
+	pattern_SponsorService_GetAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "sponsor", "admin", "admin_id"}, ""))
 
-	pattern_SponsorService_DeleteAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "sponsor", "admin", "adminID"}, ""))
+	pattern_SponsorService_DeleteAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "sponsor", "admin", "admin_id"}, ""))
 
-	pattern_SponsorService_UpdateAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "sponsor", "admin", "adminID"}, ""))
+	pattern_SponsorService_UpdateAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "sponsor", "admin", "admin_id"}, ""))
 
 	pattern_SponsorService_LoginAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "sponsor", "admin", "login"}, ""))
 
 	pattern_SponsorService_CreateSponsor_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "sponsor"}, ""))
 
-	pattern_SponsorService_UpdateSponsor_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "sponsor", "sponsorID"}, ""))
+	pattern_SponsorService_UpdateSponsor_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "sponsor", "sponsor_id"}, ""))
 
 	pattern_SponsorService_CreateCompany_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "sponsor", "company"}, ""))
 

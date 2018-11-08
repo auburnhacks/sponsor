@@ -3,10 +3,12 @@
 package admin
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/db"
 	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // DefaultACL is a variables that is used for all admins if no ACL list is
@@ -78,6 +80,13 @@ func (a *Admin) Save() error {
 
 // Register is only called once when the admin first signs up
 func (a *Admin) Register() error {
+	// hash password and save it to the database
+	pwdHash, err := bcrypt.GenerateFromPassword([]byte(a.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	// update the struct with the secure password
+	a.Password = fmt.Sprintf("%s", pwdHash)
 	query := `
 	INSERT INTO admins
 	(name, email, password, acl)
@@ -109,7 +118,9 @@ func Login(email, password string) (*Admin, error) {
 	if err != nil {
 		return nil, err
 	}
-	if a.Password != password {
+	// using bcrypt to match hashed password
+	err = bcrypt.CompareHashAndPassword([]byte(a.Password), []byte(password))
+	if err != nil {
 		return nil, ErrInvalidAuth
 	}
 	return a, nil

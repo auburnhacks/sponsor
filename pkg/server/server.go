@@ -89,7 +89,8 @@ func (s *rpcServer) serveGateway(listenAddr, serviceEndpoint string) {
 			&runtime.JSONPb{OrigName: false}),
 	)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	if err := api.RegisterSponsorServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opts); err != nil {
+	err := api.RegisterSponsorServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opts)
+	if err != nil {
 		log.Fatal(err)
 	}
 	s.gwSrv = &http.Server{

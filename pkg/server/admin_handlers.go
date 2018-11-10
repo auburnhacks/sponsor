@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/admin"
 	"github.com/auburnhacks/sponsor/pkg/auth"
@@ -64,10 +63,8 @@ func (s *rpcServer) LoginAdmin(ctx context.Context, req *api.LoginAdminRequest) 
 	if err != nil {
 		return nil, err
 	}
-	issuedAt := time.Now().Unix()
-	expiresAt := time.Now().AddDate(0, 0, 30).Unix()
-	c := auth.NewAdminClaims(admin.ID, tokenIssuer, admin.ACL, issuedAt, expiresAt)
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
+	cl := auth.New(admin.ID, admin.ACL)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cl)
 	tokenStr, err := token.SignedString(s.privKey)
 	if err != nil {
 		return nil, err

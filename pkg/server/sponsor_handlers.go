@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/auth"
 	"github.com/auburnhacks/sponsor/pkg/sponsor"
@@ -23,9 +22,7 @@ func (ss *rpcServer) LoginSponsor(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
-	issuedAt := time.Now().Unix()
-	expiresAt := time.Now().AddDate(0, 0, 30).Unix()
-	cl := auth.NewAdminClaims(sp.ID, tokenIssuer, sp.ACL, issuedAt, expiresAt)
+	cl := auth.New(sp.ID, sp.ACL)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cl)
 	tokenStr, err := token.SignedString(ss.privKey)
 	if err != nil {
@@ -112,6 +109,16 @@ func (ss *rpcServer) UpdateSponsor(ctx context.Context, req *api.UpdateSponsorRe
 func (ss *rpcServer) CreateCompany(ctx context.Context,
 	req *api.CreateCompanyRequest) (*api.CreateCompanyResponse, error) {
 	c := sponsor.NewCompany(req.Name, req.Logo)
+
+	// Authorization stuff for admin
+	cl, err := auth.FromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if err := cl.Claim("update"); err != nil {
+		return nil, err
+	}
+
 	if err := c.Save(); err != nil {
 		return nil, err
 	}

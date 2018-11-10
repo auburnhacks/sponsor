@@ -5,13 +5,9 @@ package utils
 
 import (
 	"context"
-	"path/filepath"
-	"strings"
 
 	"github.com/auburnhacks/sponsor/pkg/auth"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
-	"google.golang.org/grpc/metadata"
 )
 
 var (
@@ -21,36 +17,12 @@ var (
 	secret             []byte
 )
 
+// authenticate is a helper function that the invoked by the
+// gRPC interceptors to authenticate RPC requests
 func authenticate(ctx context.Context) error {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		return errors.New("error gathering metadata from context")
-	}
-	token, ok := md["authorization"]
-	if !ok {
-		return ErrNotAuthenicated
-	}
-	bearerToken := strings.Split(token[0], " ")
-	return authenticateJWTToken(bearerToken[1])
-}
-
-func authenticateJWTToken(tokenString string) error {
-	token, err := jwt.ParseWithClaims(tokenString, &auth.AdminClaims{}, func(token *jwt.Token) (interface{}, error) {
-		if secret == nil {
-			bb, err := auth.LoadJWTKey(filepath.Join(".", "jwt_key_dev"))
-			if err != nil {
-				return nil, err
-			}
-			secret = bb
-		}
-		return secret, nil
-	})
+	_, err := auth.FromContext(ctx)
 	if err != nil {
-		return errors.Wrap(err, "auth: error while parsing token with claims")
-	}
-	_, ok := token.Claims.(*auth.AdminClaims)
-	if !ok || !token.Valid {
-		return ErrNotAuthenicated
+		return err
 	}
 	return nil
 }

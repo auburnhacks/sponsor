@@ -37,4 +37,14 @@ CREATE TABLE IF NOT EXISTS sponsors (
     updated_at timestamp DEFAULT NOW() NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS participants (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    github TEXT NOT NULL,
+    linkedin TEXT NOT NULL,
+    resume_url TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP DEFAULT NOW() NOT NULL
+);
+
 COMMIT;

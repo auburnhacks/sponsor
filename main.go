@@ -60,7 +60,7 @@ func init() {
 	debug = flag.Bool("debug", false, "use this flag to set debug logging [DONT USE IN PRODUCTION]")
 	quillMongoURI = flag.String("quill_db_uri", "mongodb://localhost:27017/quill", "database URI for quill")
 	resumesMongoURI = flag.String("resumes_db_uri", "mongodb://localhost:27017/resumes", "database uri for resumes")
-	syncDuration = flag.Duration("sync_duration", 5*time.Second, "sleep duration every sync period")
+	syncDuration = flag.Duration("sync_duration", 1*time.Minute, "sleep duration every sync period")
 
 	server.GatewayAddr = flag.String("gateway_addr", "localhost:8080", "grpc gateway listen addr")
 	server.RPCAddr = flag.String("rpc_addr", "localhost:10000", "grpc server listening addr")

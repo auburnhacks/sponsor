@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/auburnhacks/sponsor/pkg/db"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/bson/bsoncodec"
 	"github.com/mongodb/mongo-go-driver/bson/objectid"
@@ -79,12 +80,13 @@ func Sync(quillURI, resumesURI string, d time.Duration, quit <-chan struct{}) er
 			pSlice, err := fetchParticipants(quillURI, resumesURI)
 			if err != nil {
 				log.Errorf("error while fetching participants: %v", err)
-				continue
 			}
 			pSlice, err = fetchResumes(pSlice, resumesURI)
 			if err != nil {
 				log.Errorf("error while fetching resumes: %v", err)
-				continue
+			}
+			if err := saveToDB(pSlice); err != nil {
+				log.Errorf("error while saving participants to the database: %v", err)
 			}
 			select {
 			case <-time.Tick(d):
@@ -149,25 +151,51 @@ func fetchResumes(pSlice []*hacker, resumesDBURI string) ([]*hacker, error) {
 		if len(p.Profile.Name) == 0 {
 			continue
 		}
+		var test map[string]interface{}
 		err = resumes.FindOne(ctx,
 			bson.NewDocument(
 				bson.EC.String("userid", p.ID.Hex()),
 			),
-		).Decode(&p)
+		).Decode(&test)
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
 				continue
 			}
 			return nil, err
 		}
+		url, ok := test["url"]
+		if !ok {
+			continue
+		}
+		p.Resume = url.(string)
 	}
 	return pSlice, nil
 }
 
-func saveToDB(pSlice []Participant) error {
+func saveToDB(pSlice []*hacker) error {
 	log.Debug("saving participants to database")
 	// delete all rows before inserting new ones
 	// NOTE: DELETE FROM participants RETURNING *
+	_, err := db.Conn.Exec("DELETE FROM participants")
+	if err != nil {
+		return errors.Wrap(err, "participant: error while deleteing old participants")
+	}
+	for _, h := range pSlice {
+		query := `
+	INSERT INTO participants
+	(name, github, linkedin, resume_url)
+	VALUES(:name, :github, :linkedin, :resume)`
+		stmt, err := db.Conn.PrepareNamed(query)
+		if err != nil {
+			return errors.Wrap(err, "participant: error while inserting participant")
+		}
+		stmt.QueryRow(map[string]interface{}{
+			"name":     h.Profile.Name,
+			"github":   h.Confirmation.Github,
+			"linkedin": h.Confirmation.Linkedin,
+			"resume":   h.Resume,
+		})
+	}
 	return nil
 }
 

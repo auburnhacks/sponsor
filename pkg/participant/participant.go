@@ -22,16 +22,7 @@ var (
 	ErrUnsupportedScheme = errors.New("participant: this database scheme not supported")
 )
 
-// New returns a struct that implements the Participant interface
-func New(name, linkedinProfile, githubProfile string) (Participant, error) {
-	return nil, errors.New("error not implemented")
-}
-
 // Participant is an interface that any participant must satisfy
-type Participant interface {
-	Info() string
-	Links() []string
-}
 
 type hacker struct {
 	ID      objectid.ObjectID `json:"id" bson:"_id"`
@@ -45,16 +36,8 @@ type hacker struct {
 	Resume string `json:"url"`
 }
 
-func (p *hacker) Info() string {
-	return p.Profile.Name
-}
-
-func (p *hacker) Links() []string {
-	return []string{p.Confirmation.Github, p.Confirmation.Linkedin}
-}
-
-// Hacker also implements the participant interface
-type Hacker struct {
+// Participant also implements the participant interface
+type Participant struct {
 	ID        string
 	Name      string
 	Github    string
@@ -208,4 +191,19 @@ func validScheme(dbURI string) error {
 		return ErrUnsupportedScheme
 	}
 	return nil
+}
+
+// List is a function that returns a slice of all participants
+func List() ([]Participant, error) {
+	query := `SELECT * FROM participants`
+	stmt, err := db.Conn.PrepareNamed(query)
+	if err != nil {
+		return nil, err
+	}
+	var pSlice []Participant
+	err = stmt.Get(&pSlice, nil)
+	if err != nil {
+		return nil, err
+	}
+	return pSlice, nil
 }

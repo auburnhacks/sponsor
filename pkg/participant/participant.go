@@ -172,12 +172,13 @@ func saveToDB(pSlice []*hacker) error {
 		if err != nil {
 			return errors.Wrap(err, "participant: error while inserting participant")
 		}
+		var p interface{}
 		stmt.QueryRow(map[string]interface{}{
 			"name":     h.Profile.Name,
 			"github":   h.Confirmation.Github,
 			"linkedin": h.Confirmation.Linkedin,
 			"resume":   h.Resume,
-		})
+		}).Scan(&p)
 	}
 	return nil
 }

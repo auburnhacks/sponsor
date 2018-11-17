@@ -9,11 +9,13 @@ import { ClarityModule } from '@clr/angular';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
-import { LoginService } from './services/login/login.service';
+import { AuthService } from './services/auth/auth.service';
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'home/:id', component: HomeComponent },
+  { path: 'logout', redirectTo: '/login?action=logout'},
 ]
 
 @NgModule({
@@ -32,7 +34,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
   ],
   providers: [
-    LoginService,
+    AuthService,
   ],
   bootstrap: [AppComponent]
 })

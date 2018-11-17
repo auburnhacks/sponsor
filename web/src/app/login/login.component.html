@@ -29,8 +29,8 @@
             </label>
         </div>
 
-          <div *ngIf="loginError && loginError.length() > 0" class="error active">
-              Invalid user name or password
+          <div *ngIf="loginError && loginError.length > 0" class="error active">
+              Invalid user name or password <br> {{ loginError }}
           </div>
           <button type="submit" class="btn btn-primary" (click)="login()"
           [disabled]="!loginForm.valid">

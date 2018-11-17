@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -25,6 +25,7 @@
     "@clr/ui": "^0.13.9",
     "@webcomponents/custom-elements": "^1.0.0",
     "core-js": "^2.5.4",
+    "moment": "^2.22.2",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"
   },

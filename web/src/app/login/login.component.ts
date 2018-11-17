@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import { LoginService } from '../services/login/login.service';
+import { AuthService } from '../services/auth/auth.service';
+import { Admin, Sponsor } from '../models/user.model';
+import { Error } from '../models/error.model';
+import { Router, ActivatedRoute } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -9,13 +12,14 @@ import { LoginService } from '../services/login/login.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  public loginError: string;
+  public loginError: string = "";
 
   public loginOptions = ['sponsor', 'admin'];
 
   public loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private loginService: LoginService) { 
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,
+              private acRoute: ActivatedRoute) { 
     this.loginForm = this.fb.group({
       rememberMe: [false],
       source: [this.loginOptions[0]],
@@ -25,10 +29,41 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.acRoute.queryParams
+        .pipe(filter(params => params.action))
+        .subscribe(params => {
+          if (params['action'] == "logout") {
+            return;
+          }
+          if (this.authService.isAuthenticated()) {
+            this.router.navigate(['/home', this.authService.user().id]);
+          }
+        });
   }
 
   login() {
     console.info(this.loginForm.value);
+    const formValues = this.loginForm.value;
+    if (formValues['source'] == "admin") {
+      this.authService
+      .loginAdmin(formValues['email'], formValues['password'])
+      .then((user: Admin) => {
+          this.router.navigate(['/home', user.id]);
+        },
+        (reason: Error) => {
+          this.loginError = reason.message;
+      });
+    } else if (formValues['source'] == "sponsor") {
+      this.authService
+      .loginSponsor(formValues['email'], formValues['password'])
+      .then((user: Sponsor) => {
+        console.log(user);
+        this.router.navigate(['/home', user.id]);
+      },
+      (reason: Error) => {
+        this.loginError = reason.message;
+      });
+    }
   }
 
 }

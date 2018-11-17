@@ -1,0 +1,41 @@
+<div class="login-wrapper">
+  <form class="login" [formGroup]="loginForm" clrForm>
+      <section class="title">
+          <h3 class="welcome">Welcome to</h3>
+          AuburnHacks Sponsor Portal
+          <h5 class="hint">Use the email provided to our team to sign in below.</h5>
+      </section>
+      <div class="login-group">
+          <div class="auth-source select">
+              <select id="login-auth-source-1" formControlName="source">
+                  <option *ngFor="let op of loginOptions" [ngValue]="op">
+                    {{ op | titlecase }}
+                  </option>
+              </select>
+          </div>
+
+          <input class="username" type="text" name="login_email" 
+          placeholder="Email" formControlName="email">
+          
+        <input class="password" clrPassword type="password" 
+        name="login_password" placeholder="Password"
+        formControlName="password">
+          
+        <div class="checkbox">
+            <input type="checkbox" id="rememberme"
+            formControlName="rememberMe">
+            <label for="rememberme">
+                Remember me
+            </label>
+        </div>
+
+          <div *ngIf="loginError && loginError.length() > 0" class="error active">
+              Invalid user name or password
+          </div>
+          <button type="submit" class="btn btn-primary" (click)="login()"
+          [disabled]="!loginForm.valid">
+            LOGIN
+          </button>
+      </div>
+  </form>
+</div>

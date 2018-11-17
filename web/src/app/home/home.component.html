@@ -1,0 +1,27 @@
+<header class="header header-5">
+  <div class="branding">
+      <a href="#" class="nav-link">
+          <img src="https://auburnhacks.com/images/logo.svg" 
+            width="80" height="80">
+          <span class="title">Sponsor Portal</span>
+      </a>
+  </div>
+  <div class="header-nav">
+      <a href="" class="active nav-link nav-text">Dashboard</a>
+  </div>
+  <div class="header-actions">
+      <!-- <a href="#" class="nav-link nav-icon">
+          <clr-icon shape="cog"></clr-icon>
+      </a> -->
+      <clr-dropdown>
+          <button class="nav-icon" clrDropdownTrigger>
+            <clr-icon shape="user"></clr-icon>
+            <clr-icon shape="caret down"></clr-icon>
+            <!-- <span class="title">Sai Kiran</span> -->
+          </button>
+          <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+            <a routerLink="/login" clrDropdownItem>Login</a>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+  </div>
+</header>

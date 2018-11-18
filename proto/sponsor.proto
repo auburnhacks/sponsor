@@ -187,4 +187,10 @@ message Company {
 	string logo = 3;
 }
 
-message Participant {}
+message Participant {
+    string id = 1;
+    string name = 2;
+    string github = 3;
+    string linkedin = 4;
+    string resume = 5;
+}

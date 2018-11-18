@@ -5,7 +5,6 @@ import (
 
 	"github.com/auburnhacks/sponsor/pkg/participant"
 	api "github.com/auburnhacks/sponsor/proto"
-	log "github.com/sirupsen/logrus"
 )
 
 // ListParticipants is a method on the SponsorServer that lists all the participants
@@ -16,13 +15,18 @@ func (s *rpcServer) ListParticipants(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
-	log.Debugf("%+v", pSlice)
-	// prp = protobufParticipants
+	// prp = protobufParticipant
 	prp := make([]*api.Participant, len(pSlice))
 	i := 0
 	for _, p := range pSlice {
-		log.Debugf("%v", p)
-		prp[i] = &api.Participant{}
+		prp[i] = &api.Participant{
+			Id:       p.ID,
+			Name:     p.Name,
+			Github:   p.Github,
+			Linkedin: p.Linkedin,
+			Resume:   p.Resume,
+		}
+		i++
 	}
 	return &api.ListParticipantsResponse{
 		Participants: prp,

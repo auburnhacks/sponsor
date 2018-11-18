@@ -32,17 +32,18 @@ export class LoginComponent implements OnInit {
     this.acRoute.queryParams
         .pipe(filter(params => params.action))
         .subscribe(params => {
+          console.log(params)
           if (params['action'] == "logout") {
+            this.authService.logout();
             return;
           }
-          if (this.authService.isAuthenticated()) {
-            this.router.navigate(['/home', this.authService.user().id]);
-          }
         });
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/home', this.authService.user().id]);
+    }
   }
 
   login() {
-    console.info(this.loginForm.value);
     const formValues = this.loginForm.value;
     if (formValues['source'] == "admin") {
       this.authService

@@ -90,8 +90,11 @@ func FromContext(ctx context.Context) (Claims, error) {
 	if !ok {
 		return nil, errors.New("auth: not authorization found in request context")
 	}
-	beaerToken := strings.Split(authStr[0], " ")
-	token, err := jwt.ParseWithClaims(beaerToken[1], &AdminClaims{},
+	bearerToken := strings.Split(authStr[0], " ")
+	if len(bearerToken) != 2 {
+		return nil, errors.New("utils: token not found")
+	}
+	token, err := jwt.ParseWithClaims(bearerToken[1], &AdminClaims{},
 		func(token *jwt.Token) (interface{}, error) {
 			return LoadJWTKey(filepath.Join(".", "jwt_key_dev"))
 		},

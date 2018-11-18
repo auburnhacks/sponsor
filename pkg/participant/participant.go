@@ -38,13 +38,13 @@ type hacker struct {
 
 // Participant also implements the participant interface
 type Participant struct {
-	ID        string
-	Name      string
-	Github    string
-	Linkedin  string
-	Resume    string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        string    `db:"id"`
+	Name      string    `db:"name"`
+	Github    string    `db:"github"`
+	Linkedin  string    `db:"linkedin"`
+	Resume    string    `db:"resume"`
+	CreatedAt time.Time `db:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
 
 // Sync should run as a goroutine it will run in the
@@ -197,14 +197,20 @@ func validScheme(dbURI string) error {
 // List is a function that returns a slice of all participants
 func List() ([]Participant, error) {
 	query := `SELECT * FROM participants`
-	stmt, err := db.Conn.PrepareNamed(query)
+	rows, err := db.Conn.Query(query)
 	if err != nil {
 		return nil, err
 	}
+	log.Debugf("%+v", rows)
 	var pSlice []Participant
-	err = stmt.Get(&pSlice, nil)
-	if err != nil {
-		return nil, err
+	for rows.Next() {
+		var p Participant
+		err := rows.Scan(&p.ID, &p.Name, &p.Github, &p.Linkedin, &p.Resume, &p.CreatedAt,
+			&p.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		pSlice = append(pSlice, p)
 	}
 	return pSlice, nil
 }

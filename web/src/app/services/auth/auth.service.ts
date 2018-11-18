@@ -27,6 +27,11 @@ export class AuthService {
   public isAdmin(): boolean {
     return this.type == "Admin" ? true : false;
   }
+
+  public logout() {
+    localStorage.clear();  
+  }
+
   public isAuthenticated(): boolean {
     if (moment().isSameOrBefore(this.getTokenExpiry()) && this.getToken().length > 0) {
       return true;

@@ -6,8 +6,12 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/auburnhacks/sponsor/pkg/log"
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/peer"
 )
 
 // unAuthenticatedRPC is a maps all the service name to the RPC calls that
@@ -33,16 +37,31 @@ func UnaryAuthInterceptor(ctx context.Context,
 			return nil, err
 		}
 	}
+	// update the context with the logger
+	uuid, err := uuid.NewUUID()
+	if err != nil {
+		return nil, err
+	}
+	reqIDHeader := metadata.Pairs("X-Request-ID", uuid.String())
+	p, ok := peer.FromContext(ctx)
+	if !ok {
+		p = new(peer.Peer)
+		p.Addr = nil
+	}
+	fields := logrus.Fields{
+		"request_id": uuid.String(),
+		"start_time": start,
+		"origin_ip":  p.Addr,
+	}
+	ctx = log.WithFields(ctx, fields)
+	grpc.SetHeader(ctx, reqIDHeader)
+	logger := log.GetLogger(ctx)
+
 	h, err := handler(ctx, req)
 	if err != nil {
-		log.Infof("RPC:%s\tDuration:%s\tError:%v",
-			info.FullMethod,
-			time.Since(start),
-			err)
+		logger.Errorf("%s took %d", info.FullMethod, time.Since(start))
 	} else {
-		log.Infof("RPC:%s\tDuration:%s",
-			info.FullMethod,
-			time.Since(start))
+		logger.Infof("%s took %d", info.FullMethod, time.Since(start))
 	}
 	return h, err
 }

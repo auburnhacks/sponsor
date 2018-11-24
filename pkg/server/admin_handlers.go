@@ -6,24 +6,25 @@ import (
 
 	"github.com/auburnhacks/sponsor/pkg/admin"
 	"github.com/auburnhacks/sponsor/pkg/auth"
+	"github.com/auburnhacks/sponsor/pkg/log"
 	api "github.com/auburnhacks/sponsor/proto"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 // CreateAdmin is a method on the rpcServer that is used to create an admin and save it to the database
 func (s *rpcServer) CreateAdmin(ctx context.Context, req *api.CreateAdminRequest) (*api.CreateAdminResponse, error) {
+	logger := log.GetLogger(ctx)
 	a, _ := admin.ByEmail(req.Email)
 	if a != nil {
 		return nil, fmt.Errorf("email %s already exists", req.Email)
 	}
 	a = admin.New(req.Name, req.Email, req.PasswordPlainText)
 	if err := a.Register(); err != nil {
-		log.Errorf("error while registering admin: %v", err)
+		logger.Errorf("error while registering admin: %v", err)
 		return nil, err
 	}
-	log.Debugf("%+v", a)
+	logger.Debugf("%+v", a)
 	return &api.CreateAdminResponse{
 		Admin: &api.Admin{
 			Id:    a.ID,
@@ -83,7 +84,8 @@ func (s *rpcServer) LoginAdmin(ctx context.Context, req *api.LoginAdminRequest) 
 // UpdateAdmin is a method on te rpcServer that updates the modified state
 // of an admin to the database
 func (s *rpcServer) UpdateAdmin(ctx context.Context, req *api.UpdateAdminRequest) (*api.UpdateAdminResponse, error) {
-	log.Debugf("%+v", req)
+	logger := log.GetLogger(ctx)
+	logger.Debugf("%+v", req)
 	admin, err := admin.ByID(req.AdminId)
 	if err != nil {
 		return nil, err

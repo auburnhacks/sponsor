@@ -16,7 +16,7 @@ import (
 var DefaultACL = "read,update"
 
 // ErrInvalidAuth is an error that is returns when there is a failed login attempt
-var ErrInvalidAuth = errors.New("admin: invalud credentials provided")
+var ErrInvalidAuth = errors.New("pkg/admin: invalid credentials provided, please try again")
 
 // Admin is a struct that is the highest entity in the system
 // It has write and read access to any thing in the database.
@@ -116,7 +116,7 @@ func (a *Admin) Register() error {
 func Login(email, password string) (*Admin, error) {
 	a, err := ByEmail(email)
 	if err != nil {
-		return nil, err
+		return nil, ErrInvalidAuth
 	}
 	// using bcrypt to match hashed password
 	err = bcrypt.CompareHashAndPassword([]byte(a.Password), []byte(password))

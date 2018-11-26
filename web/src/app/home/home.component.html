@@ -47,22 +47,27 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Github</th>
-                <!-- <th>LinkedIn</th> -->
+                <th>Email</th>
+                <th>School</th>
+                <th>Major</th>
+                <th>Graduation Year</th>
+                <th>GitHub</th>
                 <th>Resume</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let p of participants">
                 <td>{{ p.name }}</td>
+                <td>{{ p.email }}</td>
+                <td>{{ p.university }}</td>
+                <td>{{ p.major }}</td>
+                <td>{{ p.gradYear }}</td>
                 <td>{{ p.github }}</td>
-                <!-- <td>{{ p.linkedin }}</td> -->
                 <td><a href="{{ p.resume }}">Link</a></td>
-                <td></td>
-                <td></td>
             </tr>
         </tbody>
     </table>
+</div>
+<div class="clr-footer">
+    Made with ❤️ by the AuburnHacks Team
 </div>

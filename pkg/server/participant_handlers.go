@@ -20,11 +20,15 @@ func (s *rpcServer) ListParticipants(ctx context.Context,
 	i := 0
 	for _, p := range pSlice {
 		prp[i] = &api.Participant{
-			Id:       p.ID,
-			Name:     p.Name,
-			Github:   p.Github,
-			Linkedin: p.Linkedin,
-			Resume:   p.Resume,
+			Id:         p.ID,
+			Name:       p.Name,
+			Email:      p.Email,
+			University: p.University,
+			Major:      p.Major,
+			GradYear:   int32(p.GradYear),
+			Github:     p.Github,
+			Linkedin:   p.Linkedin,
+			Resume:     p.Resume,
 		}
 		i++
 	}

@@ -5,6 +5,7 @@ package participant
 import (
 	"context"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/auburnhacks/sponsor/pkg/db"
@@ -22,29 +23,35 @@ var (
 	ErrUnsupportedScheme = errors.New("participant: this database scheme not supported")
 )
 
-// Participant is an interface that any participant must satisfy
+// Participant also implements the participant interface
+type Participant struct {
+	ID         string    `db:"id"`
+	Name       string    `db:"name"`
+	Email      string    `db:"email"`
+	University string    `db:"university"`
+	Major      string    `db:"major"`
+	GradYear   int       `db:"grad_year"`
+	Github     string    `db:"github"`
+	Linkedin   string    `db:"linkedin"`
+	Resume     string    `db:"resume"`
+	CreatedAt  time.Time `db:"created_at"`
+	UpdatedAt  time.Time `db:"updated_at"`
+}
 
 type hacker struct {
 	ID      objectid.ObjectID `json:"id" bson:"_id"`
+	Email   string            `json:"email" bson:"email"`
 	Profile struct {
-		Name string `json:"name"`
-	} `json:"profile"`
+		Name       string `json:"name" bson:"name"`
+		University string `json:"school" bson:"school"`
+		GradYear   string `json:"graduationYear" bson:"graduationYear"`
+	} `json:"profile" bson:"profile"`
 	Confirmation struct {
-		Github   string `json:"github"`
-		Linkedin string `json:"twitter"`
-	} `json:"confirmation"`
+		Github   string `json:"github" bson:"github"`
+		Linkedin string `json:"twitter" bson:"twitter"`
+		Major    string `json:"major" bson:"major"`
+	} `json:"confirmation" bson:"confirmation"`
 	Resume string `json:"url"`
-}
-
-// Participant also implements the participant interface
-type Participant struct {
-	ID        string    `db:"id"`
-	Name      string    `db:"name"`
-	Github    string    `db:"github"`
-	Linkedin  string    `db:"linkedin"`
-	Resume    string    `db:"resume"`
-	CreatedAt time.Time `db:"created_at"`
-	UpdatedAt time.Time `db:"updated_at"`
 }
 
 // Sync should run as a goroutine it will run in the
@@ -165,19 +172,30 @@ func saveToDB(pSlice []*hacker) error {
 	}
 	for _, h := range pSlice {
 		query := `
-	INSERT INTO participants
-	(name, github, linkedin, resume_url)
-	VALUES(:name, :github, :linkedin, :resume)`
+		INSERT INTO participants
+		(name, email, university, major, grad_year, github, linkedin, resume_url)
+		VALUES(:name, :email, :university, :major, :grad_year, :github, :linkedin, :resume)`
 		stmt, err := db.Conn.PrepareNamed(query)
 		if err != nil {
 			return errors.Wrap(err, "participant: error while inserting participant")
 		}
 		var p interface{}
+		gradYear := 0
+		if h.Profile.GradYear != "" {
+			gradYear, err = strconv.Atoi(h.Profile.GradYear)
+			if err != nil {
+				return errors.Wrap(err, "participant: error while converting from string to integer")
+			}
+		}
 		stmt.QueryRow(map[string]interface{}{
-			"name":     h.Profile.Name,
-			"github":   h.Confirmation.Github,
-			"linkedin": h.Confirmation.Linkedin,
-			"resume":   h.Resume,
+			"name":       h.Profile.Name,
+			"email":      h.Email,
+			"university": h.Profile.University,
+			"major":      h.Confirmation.Major,
+			"grad_year":  gradYear,
+			"github":     h.Confirmation.Github,
+			"linkedin":   h.Confirmation.Linkedin,
+			"resume":     h.Resume,
 		}).Scan(&p)
 	}
 	return nil
@@ -205,8 +223,8 @@ func List() ([]Participant, error) {
 	var pSlice []Participant
 	for rows.Next() {
 		var p Participant
-		err := rows.Scan(&p.ID, &p.Name, &p.Github, &p.Linkedin, &p.Resume, &p.CreatedAt,
-			&p.UpdatedAt)
+		err := rows.Scan(&p.ID, &p.Name, &p.Email, &p.University, &p.Major, &p.GradYear, &p.Github,
+			&p.Linkedin, &p.Resume, &p.CreatedAt, &p.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}

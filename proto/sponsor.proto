@@ -193,4 +193,8 @@ message Participant {
     string github = 3;
     string linkedin = 4;
     string resume = 5;
+    string email = 6;
+    string university = 7;
+    string major = 8;
+    int32 grad_year = 9;
 }

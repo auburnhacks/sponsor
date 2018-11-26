@@ -40,6 +40,10 @@ CREATE TABLE IF NOT EXISTS sponsors (
 CREATE TABLE IF NOT EXISTS participants (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    university TEXT NOT NULL,
+    major TEXT NOT NULL,
+    grad_year INT NOT NULL,
     github TEXT NOT NULL,
     linkedin TEXT NOT NULL,
     resume_url TEXT NOT NULL,

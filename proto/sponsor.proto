@@ -198,3 +198,4 @@ message Participant {
     string major = 8;
     int32 grad_year = 9;
 }
+

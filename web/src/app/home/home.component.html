@@ -7,8 +7,8 @@
       </a>
   </div>
   <div class="header-nav">
-      <a href="" class="active nav-link nav-text">Home</a>
-      <a href="" class="nav-link nav-text" *ngIf="this.authService.isAdmin()">Admin</a>
+      <a routerLink="/" class="active nav-link nav-text">Home</a>
+      <a routerLink="/admin/{{ this.authService.user().id }}" class="nav-link nav-text" *ngIf="this.authService.isAdmin()">Admin</a>
   </div>
   <div class="header-actions">
       <!-- <a href="#" class="nav-link nav-icon">

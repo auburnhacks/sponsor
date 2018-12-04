@@ -17,6 +17,7 @@ const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'home/:id', component: HomeComponent },
   { path: 'logout', redirectTo: '/login?action=logout'},
+  { path: 'admin/:id', component: AdminComponent },
 ]
 
 @NgModule({

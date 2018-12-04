@@ -1,3 +1,37 @@
-<p>
-  admin works!
-</p>
+<header class="header header-5">
+  <div class="branding">
+      <a href="#" class="nav-link">
+          <img src="https://auburnhacks.com/images/logo.svg" 
+            width="80" height="80">
+          <span class="title">Sponsor Portal</span>
+      </a>
+  </div>
+  <div class="header-nav">
+      <a routerLink="/" class="nav-link nav-text">Home</a>
+      <a routerLink="/admin" class="active nav-link nav-text" *ngIf="this.authService.isAdmin()">Admin</a>
+  </div>
+  <div class="header-actions">
+      <!-- <a href="#" class="nav-link nav-icon">
+          <clr-icon shape="cog"></clr-icon>
+      </a> -->
+      <clr-dropdown>
+          <button class="nav-icon" clrDropdownTrigger>
+            <clr-icon shape="user"></clr-icon>
+            <clr-icon shape="caret down"></clr-icon>
+            <!-- <span class="title">Sai Kiran</span> -->
+          </button>
+          <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+            <a routerLink="/login" *ngIf="!user" clrDropdownItem>Login</a>
+            <a href="/home/{{ id }}" *ngIf="user" clrDropdownItem>{{ user.name }}</a>
+            <a routerLink="/logout" *ngIf="user" clrDropdownItem>Logout</a>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+  </div>
+</header>
+
+<!--- TODO: add sponsor form here -->
+<div class="container">
+  <h3>Add New Sponsor</h3>
+  
+</div>
+<!-- TODO: add admin form here-->

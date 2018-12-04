@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './services/auth/auth.service';
+import { AdminComponent } from './admin/admin.component';
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
@@ -22,7 +23,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    AdminComponent
   ],
   imports: [
     FormsModule,

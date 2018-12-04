@@ -27,8 +27,18 @@ export class HomeComponent implements OnInit, AfterContentInit {
         if (!this.authService.isAuthenticated()) {
           this.router.navigate(['/login']);
         }
+        // Since the user might come back after closing the browser
+        // validating them to make sure they are authorized to look at the homepage
         this.id = params['id'];
-        this.user = this.authService.user();
+        this.authService
+          .validateUser(this.id)
+          .then((isValid) => {
+            if(!isValid) {
+              console.info('Invalid userId: ' + this.id);
+              this.router.navigate(['/login'])
+            }
+            this.user = this.authService.user();
+          })
       } else {
         this.router.navigate(['/login']);
       }

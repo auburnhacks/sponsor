@@ -76,6 +76,22 @@ export class AuthService {
     });
   }
 
+  public validateUser(userId: string): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      if (userId.length == 0) {
+        reject(false);
+      }
+      this.http
+      .get(environment.apiBase + "/sponsor/admin/" + userId,
+        { headers: new HttpHeaders().append("Authorization", "Bearer " + this.getToken())})
+      .toPromise()
+      .then((adminData) => {
+        resolve(true);
+      },
+      (reason) => reject(false));
+    });
+  }
+
   private loadCurrentUser() {
     const savedUser = JSON.parse(localStorage.getItem("sess_user"));
     if (savedUser.type == "Admin") {

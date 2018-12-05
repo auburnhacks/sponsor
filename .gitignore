@@ -3,4 +3,6 @@ main
 vendor/
 .vscode/launch.json
 sponsor-server
+sponsor-client
 !cmd/sponsor-server/
+!cmd/sponsor-client/

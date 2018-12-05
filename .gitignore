@@ -1,4 +1,6 @@
-./sponsor
+!sponsor
 main
 vendor/
 .vscode/launch.json
+sponsor-server
+!cmd/sponsor-server/

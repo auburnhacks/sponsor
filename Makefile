@@ -26,5 +26,6 @@ client:
 
 .PHONY: clean
 clean:
-	rm sponsor-server 2> /dev/null
-	rm sponsor-client 2> /dev/null
+	@echo "Cleaning..."
+	@rm sponsor-server > /dev/null
+	@rm sponsor-client > /dev/null

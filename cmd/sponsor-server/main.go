@@ -116,6 +116,7 @@ func main() {
 		pollerQuit <- struct{}{}
 		os.Exit(1)
 	}
+	// blocks forever until SIGTERM signal is received for container
 	signal := <-quit
 	pollerQuit <- struct{}{}
 	log.Infof("received %v signal, terminating server", signal)

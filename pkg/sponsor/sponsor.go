@@ -44,6 +44,8 @@ func New(name, email, password, companyID string, acl string) *Sponsor {
 		s.ACL = DefaultACL
 	} else if len(acl) == 0 {
 		s.ACL = DefaultACL
+	} else {
+		s.ACL = acl
 	}
 	return s
 }
@@ -184,6 +186,25 @@ func CompanyByID(ID string) (*Company, error) {
 		return nil, err
 	}
 	return c, nil
+}
+
+// ListCompanies fetches all the list of companies from the database
+func ListCompanies() ([]*Company, error) {
+	query := `SELECT * FROM company ORDER BY id DESC`
+	rows, err := db.Conn.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	var companies []*Company
+	for rows.Next() {
+		c := new(Company)
+		err := rows.Scan(&c.ID, &c.Name, &c.Logo, &c.CreatedAt, &c.UpdatedAt)
+		if err != nil {
+			return nil, errors.Wrap(err, "sponsor: error while scanning rows for companies")
+		}
+		companies = append(companies, c)
+	}
+	return companies, nil
 }
 
 // Save saves an instance of the company to the database

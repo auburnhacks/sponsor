@@ -1,7 +1,7 @@
 <header class="header header-5">
   <div class="branding">
       <a href="#" class="nav-link">
-          <img src="https://auburnhacks.com/images/logo.svg" 
+          <img src="https://auburnhacks.com/images/brand/logo.svg" 
             width="80" height="80">
           <span class="title">Sponsor Portal</span>
       </a>
@@ -22,7 +22,7 @@
           </button>
           <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
             <a routerLink="/login" *ngIf="!user" clrDropdownItem>Login</a>
-            <a href="/home/{{ id }}" *ngIf="user" clrDropdownItem>{{ user.name }}</a>
+            <a routerLink="/profile/{{ id }}/update" *ngIf="user" clrDropdownItem>{{ user.name }}</a>
             <a routerLink="/logout" *ngIf="user" clrDropdownItem>Logout</a>
         </clr-dropdown-menu>
       </clr-dropdown>

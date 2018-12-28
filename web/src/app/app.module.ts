@@ -4,13 +4,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-import { ClarityModule } from '@clr/angular';
+import { ClarityModule, ClrPasswordContainer, ClrFormsNextModule } from '@clr/angular';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './services/auth/auth.service';
 import { AdminComponent } from './admin/admin.component';
+import { SponsorService } from './services/sponsor/sponsor.service';
+import { UpdateProfileComponent } from './update-profile/update-profile.component';
 
 const appRoutes: Routes = [
   { path:'', component: HomeComponent },
@@ -18,6 +20,7 @@ const appRoutes: Routes = [
   { path: 'home/:id', component: HomeComponent },
   { path: 'logout', redirectTo: '/login?action=logout'},
   { path: 'admin/:id', component: AdminComponent },
+  { path: 'profile/:id/update', component: UpdateProfileComponent},
 ]
 
 @NgModule({
@@ -25,11 +28,13 @@ const appRoutes: Routes = [
     AppComponent,
     HomeComponent,
     LoginComponent,
-    AdminComponent
+    AdminComponent,
+    UpdateProfileComponent
   ],
   imports: [
     FormsModule,
     ClarityModule,
+    ClrFormsNextModule,
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -38,6 +43,7 @@ const appRoutes: Routes = [
   ],
   providers: [
     AuthService,
+    SponsorService
   ],
   bootstrap: [AppComponent]
 })

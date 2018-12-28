@@ -1,0 +1,45 @@
+<header class="header header-5">
+  <div class="branding">
+      <a href="#" class="nav-link">
+          <img src="https://auburnhacks.com/images/brand/logo.svg" 
+            width="80" height="80">
+          <span class="title">Sponsor Portal</span>
+      </a>
+  </div>
+  <div class="header-nav">
+      <a routerLink="/" class="nav-link nav-text">Home</a>
+      <a routerLink="/admin/{{ this.authService.user().id }}" class="nav-link nav-text" *ngIf="this.authService.isAdmin()">Admin</a>
+  </div>
+  <div class="header-actions">
+      <!-- <a href="#" class="nav-link nav-icon">
+          <clr-icon shape="cog"></clr-icon>
+      </a> -->
+      <clr-dropdown>
+          <button class="nav-icon" clrDropdownTrigger>
+            <clr-icon shape="user"></clr-icon>
+            <clr-icon shape="caret down"></clr-icon>
+            <!-- <span class="title">Sai Kiran</span> -->
+          </button>
+          <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+            <a routerLink="/login" *ngIf="!user" clrDropdownItem>Login</a>
+            <a routerLink="/profile/{{ id }}/update" *ngIf="user" clrDropdownItem>{{ user.name }}</a>
+            <a routerLink="/logout" *ngIf="user" clrDropdownItem>Logout</a>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+  </div>
+</header>
+
+<div class="container">
+    <h1>Update Profile</h1>
+    <form [formGroup]="updateUserForm" clrForm>
+        <label for="name">Full Name: </label><br>
+        <input clrInput type="text" value="this.user.name" name="name" formControlName="name" /> <br /><br />
+        <label for="email">Email Address: </label><br>
+        <input clrInput type="text" value="this.user.email" name="email" formControlName="email" /> <br /><br />
+        <label for="password">New Password: </label><br />
+        <input clrInput type="password" name="password" placeholder="New Password" formControlName="password" /><br /><br />
+        <label for="confirm_password">Confirm Password: </label><br />
+        <input clrInput type="password" name="confirm_password" placeholder="Confirm Password" formControlName="confirmPassword" /><br /><br />
+        <button class="btn btn-primary" (click)="updateProfile()">Update</button>
+    </form>
+</div>

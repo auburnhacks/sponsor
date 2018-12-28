@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { Error } from '../../models/error.model';
 import * as moment from "moment";
 import { Type } from '@angular/compiler';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +77,11 @@ export class AuthService {
     });
   }
 
+  /**
+   * validateUser sends a request to the server to check and see if the given token is still
+   * valid
+   * @param userId 
+   */
   public validateUser(userId: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
       if (userId.length == 0) {
@@ -90,6 +96,13 @@ export class AuthService {
       },
       (reason) => reject(false));
     });
+  }
+
+  public updateUser(changeData): Observable<Admin | Sponsor> {
+    let updatedUser = new Observable<Admin | Sponsor>((observer) => {
+      
+    });
+    return updatedUser;
   }
 
   private loadCurrentUser() {

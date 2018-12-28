@@ -17,9 +17,11 @@
           <input class="username" type="text" name="login_email" 
           placeholder="Email" formControlName="email">
           
-        <input class="password" clrPassword type="password" 
-        name="login_password" placeholder="Password"
-        formControlName="password">
+        <clr-password-container>
+            <input class="password" clrPassword type="password" 
+            name="login_password" placeholder="Password"
+            formControlName="password">
+        </clr-password-container>
           
         <div class="checkbox">
             <input type="checkbox" id="rememberme"

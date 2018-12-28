@@ -1,7 +1,7 @@
 <header class="header header-5">
   <div class="branding">
       <a href="#" class="nav-link">
-          <img src="https://auburnhacks.com/images/logo.svg" 
+          <img src="https://auburnhacks.com/images/brand/logo.svg" 
             width="80" height="80">
           <span class="title">Sponsor Portal</span>
       </a>
@@ -29,9 +29,41 @@
   </div>
 </header>
 
-<!--- TODO: add sponsor form here -->
+
 <div class="container">
-  <h3>Add New Sponsor</h3>
-  
+  <h3>Add Sponsor</h3>
+  <form [formGroup]="addSponsorForm" clrForm>
+    <input clrInput type="text" placeholder="Sponsor's Name" name="sponsor_name"
+    formControlName="sponsorName" />
+
+    <br /> <br />
+
+    <input clrInput type="text" placeholder="Sponsor's Email" name="sponsor_email"
+    formControlName="sponsorEmail" />
+
+    <br /> <br />
+    
+    <clr-password-container>
+        <input clrPassword placeholder="Password" name="password" formControlName="sponsorPassword" />
+        <clr-control-helper>
+            <button class="btn btn-sm btn-link" (click)="generateUniquePassword()">Generate</button>
+        </clr-control-helper>
+    </clr-password-container>
+
+    <br />
+    
+    <select formControlName="companyId">
+        <option *ngFor="let company of companies" [ngValue]="company.id">{{ company.name }}</option>
+    </select>
+    
+    <br /><br/>
+
+    <label formArrayName="aclListMap" *ngFor="let acl of addSponsorForm.controls.aclListMap.controls; let i = index">
+        <input type="checkbox" [formControlName]="i">
+        {{ aclListMap[i].name }}
+        <br />
+    </label>
+    <br /><br />
+    <button class="btn btn-primary" (click)="createSponsor()">Submit</button>
+  </form>
 </div>
-<!-- TODO: add admin form here-->

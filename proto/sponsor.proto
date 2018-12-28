@@ -79,6 +79,20 @@ service SponsorService {
             get: "/v1/sponsor/participants"
         };
     }
+    rpc ListCompanies (ListCompaniesRequest) returns (ListCompaniesResponse) {
+        option (google.api.http) = {
+            get: "/v1/sponsor/companies"
+        };
+    };
+}
+
+message ListCompaniesResponse {
+    repeated Company companies = 1;
+}
+
+message ListCompaniesRequest {
+    // limit is an optional field
+    int32 limit = 1;
 }
 
 message LoginSponsorRequest {

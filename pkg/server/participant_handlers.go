@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/auburnhacks/sponsor/pkg/participant"
+	"github.com/auburnhacks/sponsor/pkg/sponsor"
 	api "github.com/auburnhacks/sponsor/proto"
 )
 
@@ -34,5 +35,25 @@ func (s *rpcServer) ListParticipants(ctx context.Context,
 	}
 	return &api.ListParticipantsResponse{
 		Participants: prp,
+	}, nil
+}
+
+func (s *rpcServer) ListCompanies(ctx context.Context,
+	req *api.ListCompaniesRequest) (*api.ListCompaniesResponse, error) {
+	companies, err := sponsor.ListCompanies()
+	if err != nil {
+		return nil, err
+	}
+	var apiCompanies []*api.Company
+	for _, c := range companies {
+		apiC := &api.Company{
+			Id:   c.ID,
+			Name: c.Name,
+			Logo: c.Logo,
+		}
+		apiCompanies = append(apiCompanies, apiC)
+	}
+	return &api.ListCompaniesResponse{
+		Companies: apiCompanies,
 	}, nil
 }

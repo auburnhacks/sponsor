@@ -21,6 +21,7 @@ var unauthenticatedRPC = map[string][]string{
 		"LoginAdmin",
 		"LoginSponsor",
 		"CreateAdmin",
+		"ListCompanines",
 	},
 }
 

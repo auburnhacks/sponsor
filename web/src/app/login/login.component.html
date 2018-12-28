@@ -14,13 +14,15 @@
               </select>
           </div>
 
-          <input class="username" type="text" name="login_email" 
-          placeholder="Email" formControlName="email">
+          <clr-input-container>
+            <input clrInput class="email" type="text" name="login_email" 
+            placeholder="Email" formControlName="email" size="50">
+          </clr-input-container>
           
         <clr-password-container>
             <input class="password" clrPassword type="password" 
             name="login_password" placeholder="Password"
-            formControlName="password">
+            formControlName="password" size="50">
         </clr-password-container>
           
         <div class="checkbox">

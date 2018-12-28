@@ -200,7 +200,8 @@ func ListCompanies() ([]*Company, error) {
 		c := new(Company)
 		err := rows.Scan(&c.ID, &c.Name, &c.Logo, &c.CreatedAt, &c.UpdatedAt)
 		if err != nil {
-			return nil, errors.Wrap(err, "sponsor: error while scanning rows for companies")
+			return nil, errors.Wrap(err,
+				"sponsor: error while scanning rows for companies")
 		}
 		companies = append(companies, c)
 	}

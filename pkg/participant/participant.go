@@ -10,8 +10,7 @@ import (
 
 	"github.com/auburnhacks/sponsor/pkg/db"
 	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/bson/bsoncodec"
-	"github.com/mongodb/mongo-go-driver/bson/objectid"
+	"github.com/mongodb/mongo-go-driver/bson/primitive"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -39,8 +38,8 @@ type Participant struct {
 }
 
 type hacker struct {
-	ID      objectid.ObjectID `json:"id" bson:"_id"`
-	Email   string            `json:"email" bson:"email"`
+	ID      primitive.ObjectID `json:"id" bson:"_id"`
+	Email   string             `json:"email" bson:"email"`
 	Profile struct {
 		Name       string `json:"name" bson:"name"`
 		University string `json:"school" bson:"school"`
@@ -104,7 +103,7 @@ func fetchParticipants(quillURI, resumesURI string) ([]*hacker, error) {
 	// instance of the users collection on the mongodb for quill
 	// TODO: make this more abstract
 	users := client.Database("quill").Collection("users")
-	cur, err := users.Find(ctx, nil)
+	cur, err := users.Find(ctx, bson.D{})
 	if err != nil {
 		return nil, errors.Wrap(err, "participant: error while find participants from collection")
 	}
@@ -117,7 +116,7 @@ func fetchParticipants(quillURI, resumesURI string) ([]*hacker, error) {
 			return nil, errors.Wrap(err, "participant: error while decoding bytes from mongo")
 		}
 		var h *hacker
-		if err := bsoncodec.Unmarshal(br, &h); err != nil {
+		if err := bson.Unmarshal(br, &h); err != nil {
 			return nil, errors.Wrap(err, "participant: error while unmarshaling bson to struct")
 		}
 		pSlice = append(pSlice, h)
@@ -142,11 +141,9 @@ func fetchResumes(pSlice []*hacker, resumesDBURI string) ([]*hacker, error) {
 			continue
 		}
 		var test map[string]interface{}
-		err = resumes.FindOne(ctx,
-			bson.NewDocument(
-				bson.EC.String("userid", p.ID.Hex()),
-			),
-		).Decode(&test)
+		err = resumes.FindOne(ctx, bson.D{
+			{"userid", p.ID.Hex()},
+		}).Decode(&test)
 		if err != nil {
 			if err == mongo.ErrNoDocuments {
 				continue

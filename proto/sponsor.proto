@@ -69,6 +69,11 @@ service SponsorService {
             body: "*"
         };
     }
+    rpc Resumes(ResumesRequest) returns (ResumesResponse) {
+      option (google.api.http) = {
+            get : "/v1/sponsor/participants/resumes"
+      };
+    }
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //                      COMMON RPC CALLS
@@ -84,6 +89,14 @@ service SponsorService {
             get: "/v1/sponsor/companies"
         };
     };
+}
+
+message ResumesRequest {
+    int32 limit = 1;
+}
+
+message ResumesResponse {
+    bytes archive = 1;
 }
 
 message ListCompaniesResponse {

@@ -4,46 +4,98 @@ import (
 	"archive/tar"
 	"bytes"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 
 	"github.com/pkg/errors"
 )
 
-// BulkDownload is a function that will allow authorized sponsors to download
-// all resumes in a single shot for offline viewing.
-func BulkDownload() ([]byte, error) {
-	// Attempt to fetch all the resumes concurrently
-	// Run it through the tar function
-	// Run it through gzip function to minimize the latency while downloading
-	pSlice, err := List()
+var c = http.DefaultClient
+
+// AllResumes is a function that lists all participants all downloads their
+// resumes from google cloud and provides a byte sequence in tar format
+func AllResumes() ([]byte, error) {
+	participants, err := List()
 	if err != nil {
 		return nil, err
 	}
-	rBufCh := make(chan bytes.Buffer)
-	errCh := make(chan error)
-	for _, p := range pSlice {
-		go fetchBytes(p.Resume, rBufCh, errCh)
+	urls := []string{}
+	for _, p := range participants {
+		if len(p.Resume) == 0 {
+			continue
+		}
+		urls = append(urls, p.Resume)
 	}
-	var tBuf bytes.Buffer
-	resIdx := 1
-	tw := tar.NewWriter(&tBuf)
-	for rBuf := range rBufCh {
+	bt, err := Download(urls)
+	if err != nil {
+		return nil, err
+	}
+	var tbuf bytes.Buffer
+	tw := tar.NewWriter(&tbuf)
+	for i, bb := range bt {
 		hdr := &tar.Header{
-			Name: fmt.Sprintf("resume-%d,pdf", resIdx),
+			Name: fmt.Sprintf("resume-%d.pdf", i),
 			Mode: 0600,
-			Size: int64(rBuf.Len()),
+			Size: int64(len(bb)),
 		}
 		if err := tw.WriteHeader(hdr); err != nil {
-			return nil, err
+			return nil, errors.Wrap(err,
+				"pkg/participant: error while writing header.")
 		}
-		if _, err := tw.Write(rBuf.Bytes()); err != nil {
-			return nil, errors.Wrap(err, "pkg/participant: error while write to the tar archive")
+		if _, err := tw.Write(bb); err != nil {
+			return nil, errors.Wrap(err,
+				"pkg/participant: error while wrint to tar archive")
 		}
 	}
 	if err := tw.Close(); err != nil {
-		return nil, errors.Wrap(err, "pkg/participant: error while closing tar archive")
+		return nil, errors.Wrap(err,
+			"pkg/participant: error while closing tar archive")
 	}
-	return tBuf.Bytes(), nil
+	return tbuf.Bytes(), nil
 }
 
-func fetchBytes(url string, outChan chan<- bytes.Buffer, errCh chan<- error) {
+// Download ia function that will allow you to download all the resumes at once
+func Download(urls []string) ([][]byte, error) {
+	bufCh := make(chan []byte, len(urls))
+	urlCh := make(chan string)
+
+	for i := 0; i < len(urls); i++ {
+		go fetch(urlCh, bufCh)
+	}
+
+	for _, url := range urls {
+		urlCh <- url
+	}
+	close(urlCh)
+	bt := [][]byte{} // bt is a bytes table that has all the resumes
+	for i := 0; i < len(urls); i++ {
+		bb := <-bufCh
+		bt = append(bt, bb)
+	}
+	return bt, nil
+}
+
+func fetch(urlCh <-chan string, bufCh chan<- []byte) {
+	url, ok := <-urlCh
+	if !ok {
+		return
+	}
+	bb, err := getBytes(url)
+	if err != nil {
+		return
+	}
+	bufCh <- bb
+}
+
+func getBytes(url string) ([]byte, error) {
+	resp, err := c.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	bb, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return bb, nil
 }

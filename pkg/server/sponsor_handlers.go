@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/auburnhacks/sponsor/pkg/auth"
+	"github.com/auburnhacks/sponsor/pkg/participant"
 	"github.com/auburnhacks/sponsor/pkg/sponsor"
 	api "github.com/auburnhacks/sponsor/proto"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -128,5 +129,18 @@ func (ss *rpcServer) CreateCompany(ctx context.Context,
 			Name: c.Name,
 			Logo: c.Logo,
 		},
+	}, nil
+}
+
+// Resumes is a function that returns a tar archive as a sequence of
+// bytes
+func (ss *rpcServer) Resumes(ctx context.Context,
+	req *api.ResumesRequest) (*api.ResumesResponse, error) {
+	b, err := participant.AllResumes()
+	if err != nil {
+		return nil, err
+	}
+	return &api.ResumesResponse{
+		Archive: b,
 	}, nil
 }

@@ -3,9 +3,12 @@ package db
 import (
 	"os"
 
+	//"github.com/golang-migrate/migrate"
 	"github.com/golang-migrate/migrate"
 	"github.com/golang-migrate/migrate/database/postgres"
-	_ "github.com/golang-migrate/migrate/source/file" // this is a required import by the migration package. oh well!
+
+	// this is a required import by the migration package. oh well!
+	_ "github.com/golang-migrate/migrate/source/file"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"

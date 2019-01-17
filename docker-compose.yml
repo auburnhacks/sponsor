@@ -1,8 +1,17 @@
-version: '3'
+version: "3"
 services:
-  api:
-    build: .
+  postgres:
+    image: postgres
+    restart: always
+    volumes:
+      - ~/data/postgres/:/var/lib/postgresql/data
     ports:
-      - "8080:8080"
-      - "10000:1000"
-
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=auburnhacks_sponsors
+      - POSTGRES_PASSWORD=7d9d7763e27990e47220
+    networks: 
+      - db_net
+networks: 
+  db_net:

@@ -6,3 +6,4 @@ sponsor-server
 sponsor-client
 !cmd/sponsor-server/
 !cmd/sponsor-client/
+jwt_key_prod

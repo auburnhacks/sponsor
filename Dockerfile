@@ -11,6 +11,7 @@ RUN apk update \
     && rm -rf /var/cache/apk/*
 COPY --from=builder /build/sponsor-server ./
 COPY ./migrations/. ./migrations/
+COPY ./jwt_key_prod ./jwt_key_dev
 RUN chmod +x sponsor-server
 EXPOSE 8080
 EXPOSE 10000

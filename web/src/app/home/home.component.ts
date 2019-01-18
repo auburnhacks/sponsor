@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit, AfterContentInit {
   public participants: Array<Participant>;
 
   
-  constructor(private acRoute: ActivatedRoute, private authService: AuthService,
+  constructor(private acRoute: ActivatedRoute, public authService: AuthService,
               private router: Router, private participantService: ParticipantService) { }
 
   public ngOnInit(): void {

@@ -58,7 +58,8 @@
     
     <br /><br/>
 
-    <label formArrayName="aclListMap" *ngFor="let acl of addSponsorForm.controls.aclListMap.controls; let i = index">
+    <!-- <label formArrayName="aclListMap" *ngFor="let acl of addSponsorForm.controls.aclListMap.controls; let i = index"> -->
+    <label formArrayName="aclListMap" *ngFor="let acl of aclFormData['controls']; let i = index">
         <input type="checkbox" [formControlName]="i">
         {{ aclListMap[i].name }}
         <br />

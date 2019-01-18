@@ -13,7 +13,7 @@ export class UpdateProfileComponent implements OnInit {
   public user: User;
   public updateUserForm: FormGroup;
   
-  constructor(private authService: AuthService, private fb: FormBuilder) { }
+  constructor(public authService: AuthService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.user = this.authService.user();

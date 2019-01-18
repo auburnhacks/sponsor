@@ -23,7 +23,7 @@ export class AdminComponent implements OnInit {
   public companies: Company[] = new Array<Company>();
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private activatedRouter: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
@@ -48,6 +48,9 @@ export class AdminComponent implements OnInit {
       this.user = this.authService.user();
       // Load the companies as soon as the component mounts on screen
       this.sponsorService.getCompanies().subscribe((data) => {
+        if (!data['companies']) {
+          return;
+        }
         data['companies'].forEach((c: Company) => {
           return this.companies.push(c);
         });
@@ -103,5 +106,9 @@ export class AdminComponent implements OnInit {
       observer.complete();
     });
     return aclStr;
+  }
+  
+  get aclFormData() {
+    return this.addSponsorForm.controls.aclListMap;
   }
 }

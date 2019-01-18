@@ -22,7 +22,10 @@
           </button>
           <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
             <a routerLink="/login" *ngIf="!user" clrDropdownItem>Login</a>
-            <a href="/home/{{ id }}" *ngIf="user" clrDropdownItem>{{ user.name }}</a>
+            <!-- <a href="/home/{{ id }}" *ngIf="user" clrDropdownItem>{{ user.name }}</a> -->
+            <a routerLink="/home/{{ getUserId() }}" *ngIf="user" clrDropdownItem>
+                {{ user.name }}
+            </a>
             <a routerLink="/logout" *ngIf="user" clrDropdownItem>Logout</a>
         </clr-dropdown-menu>
       </clr-dropdown>
@@ -31,6 +34,18 @@
 
 
 <div class="container">
+    <div *ngIf="showAddSponsorAlert()">
+        <div class="alert alert-success" role="alert">
+            <div class="alert-items">
+                <div class="alert-item static">
+                    <div class="alert-icon-wrapper">
+                        <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+                    </div>
+                    <span class="alert-text">Sponsor created</span>
+                </div>
+            </div>
+        </div>
+    </div>
   <h3>Add Sponsor</h3>
   <form [formGroup]="addSponsorForm" clrForm>
     <input clrInput type="text" placeholder="Sponsor's Name" name="sponsor_name"

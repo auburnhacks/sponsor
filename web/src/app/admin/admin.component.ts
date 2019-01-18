@@ -21,6 +21,7 @@ export class AdminComponent implements OnInit {
   ]
   public addSponsorForm: FormGroup;
   public companies: Company[] = new Array<Company>();
+  public showAddAlert: boolean = false;
 
   constructor(
     public authService: AuthService,
@@ -83,7 +84,9 @@ export class AdminComponent implements OnInit {
           console.log(this.addSponsorForm.value);
           this.sponsorService.createSponsor(this.addSponsorForm.value)
             .subscribe((sp: Sponsor) => {
-              console.log(sp);
+              // updating UI based on the result
+              this.showAddAlert = true;
+              // console.log(sp);
             });
         });
     }
@@ -110,5 +113,13 @@ export class AdminComponent implements OnInit {
   
   get aclFormData() {
     return this.addSponsorForm.controls.aclListMap;
+  }
+
+  getUserId() {
+    return this.user.id;
+  }
+
+  showAddSponsorAlert() {
+    return this.showAddAlert;
   }
 }

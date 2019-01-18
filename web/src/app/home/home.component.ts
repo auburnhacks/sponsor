@@ -55,5 +55,15 @@ export class HomeComponent implements OnInit, AfterContentInit {
           console.log(reason);
         });
   }
+  
+  public hasUser() {
+    return this.user !== undefined;
+  }
 
+  public getUserId() {
+    if(this.user) {
+      return this.user.id;
+    }
+    return undefined;
+  }
 }

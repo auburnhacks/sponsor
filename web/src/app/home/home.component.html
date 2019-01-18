@@ -18,7 +18,7 @@
           </button>
           <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
             <a routerLink="/login" *ngIf="!user" clrDropdownItem>Login</a>
-            <a routerLink="/profile/{{ id }}/update" *ngIf="user" clrDropdownItem>{{ user.name }}</a>
+            <a routerLink="/home/{{ getUserId() }}" *ngIf="hasUser()" clrDropdownItem>{{ user.name }}</a>
             <a routerLink="/logout" *ngIf="user" clrDropdownItem>Logout</a>
         </clr-dropdown-menu>
       </clr-dropdown>

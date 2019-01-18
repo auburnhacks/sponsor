@@ -87,14 +87,25 @@ export class AuthService {
       if (userId.length == 0) {
         reject(false);
       }
-      this.http
-      .get(environment.apiBase + "/sponsor/admin/" + userId,
-        { headers: new HttpHeaders().append("Authorization", "Bearer " + this.getToken())})
-      .toPromise()
-      .then((adminData) => {
-        resolve(true);
-      },
-      (reason) => reject(false));
+      if (this.isAdmin()) {
+        this.http
+        .get(environment.apiBase + "/sponsor/admin/" + userId,
+          { headers: new HttpHeaders().append("Authorization", "Bearer " + this.getToken())})
+        .toPromise()
+        .then((adminData) => {
+          resolve(true);
+        },
+        (reason) => reject(false));
+      } else {
+        // check sponsor endpoint as loggedin user is not a admin
+        this.http
+          .get(environment.apiBase + "/sponsor/" + userId + "/info",
+          { headers: new HttpHeaders().append("Authorization", "Bearer " + this.getToken()) })
+          .toPromise()
+          .then((sponsorData) => {
+            resolve(true);
+          }, (reason) => reject(false));
+      }
     });
   }
 

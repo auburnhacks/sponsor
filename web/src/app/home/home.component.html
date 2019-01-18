@@ -11,14 +11,10 @@
       <a routerLink="/admin/{{ this.authService.user().id }}" class="nav-link nav-text" *ngIf="this.authService.isAdmin()">Admin</a>
   </div>
   <div class="header-actions">
-      <!-- <a href="#" class="nav-link nav-icon">
-          <clr-icon shape="cog"></clr-icon>
-      </a> -->
       <clr-dropdown>
           <button class="nav-icon" clrDropdownTrigger>
             <clr-icon shape="user"></clr-icon>
             <clr-icon shape="caret down"></clr-icon>
-            <!-- <span class="title">Sai Kiran</span> -->
           </button>
           <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
             <a routerLink="/login" *ngIf="!user" clrDropdownItem>Login</a>

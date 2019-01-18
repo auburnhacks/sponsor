@@ -74,6 +74,35 @@ func (ss *rpcServer) CreateSponsor(ctx context.Context,
 	}, nil
 }
 
+// GetSponsor is a method on the rpcServer that is used to get information
+// about a sponsor.
+// NOTE: password is not sent through this rpc call
+func (ss *rpcServer) GetSponsor(ctx context.Context,
+	req *api.GetSponsorRequest) (*api.GetSponsorResponse, error) {
+	s, err := sponsor.ByID(req.SponsorId)
+	if err != nil {
+		return nil, err
+	}
+	c, err := sponsor.CompanyByID(s.CompanyID)
+	if err != nil {
+		return nil, err
+	}
+	return &api.GetSponsorResponse{
+		Sponsor: &api.Sponsor{
+			Id:    s.ID,
+			Name:  s.Name,
+			Email: s.Email,
+			Password: "",
+			Company: &api.Company{
+				Id:   c.ID,
+				Name: c.Name,
+				Logo: c.Logo,
+			},
+			ACL: s.ACL,
+		},
+	}, nil
+}
+
 // UpdateSponsor is a method on the rpcServer that is used to modify a
 // state of a sponsor in the database
 func (ss *rpcServer) UpdateSponsor(ctx context.Context, req *api.UpdateSponsorRequest) (*api.UpdateSponsorResponse, error) {

@@ -51,6 +51,11 @@ service SponsorService {
             body: "*"
         };
     }
+    rpc GetSponsor (GetSponsorRequest) returns (GetSponsorResponse) {
+        option (google.api.http) = {
+            get: "/v1/sponsor/{sponsor_id}/info"
+        };
+    }
     rpc UpdateSponsor(UpdateSponsorRequest) returns(UpdateSponsorResponse) {
         option (google.api.http) = {
             put: "/v1/sponsor/{sponsor_id}"
@@ -89,6 +94,14 @@ service SponsorService {
             get: "/v1/sponsor/companies"
         };
     };
+}
+
+message GetSponsorRequest {
+    string sponsor_id = 1;
+}
+
+message GetSponsorResponse {
+    Sponsor sponsor = 1;
 }
 
 message ResumesRequest {

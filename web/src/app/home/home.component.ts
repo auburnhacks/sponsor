@@ -66,4 +66,16 @@ export class HomeComponent implements OnInit, AfterContentInit {
     }
     return undefined;
   }
+
+  public isSponsor() {
+    return !this.authService.isAdmin();
+  }
+  
+  public getLogoUrl() {
+    return this.user['company']['logo'];
+  }
+
+  public getCompanyName() {
+    return this.user['company']['name'];
+  }
 }
